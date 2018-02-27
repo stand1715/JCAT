@@ -1,0 +1,82 @@
+<Panel ux:Class="Color.Panel" Margin="12" color_code="#0181b0">
+	<float4 ux:Property="color_code"/>
+
+	<JavaScript>
+
+	let m_app = require ('app/models/MApp'); 
+	let c_app = require ('app/controllers/CApp'); 
+
+	function h_color_change(args){
+		c_app.h_color_change(args);
+	}
+
+	module.exports = {
+		colors: m_app.colors,
+		h_color_change: h_color_change,
+		current_color: m_app.current_color
+	}
+
+	</JavaScript>
+
+	<WhileTrue ux:Name="opacity_toggle" Value="false">
+		<Change selection_list.Opacity="1" Duration="1"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="selection_toggle" Value="false">
+		<Set selection.Value="true" Delay="0.2"/>
+		<Toggle Target="selection_toggle" Delay="0.2"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="selection" Value="false" >
+		
+		<StackPanel ux:Name="selection_list" ItemSpacing="10" ContentAlignment="Bottom" Opacity="0.3">
+			<AddingAnimation>
+		        <Move Y="1" Duration="0.5" RelativeTo="Size" Easing="Linear" />
+		    </AddingAnimation>
+		    <RemovingAnimation>
+		    	<Move Y="1" Duration="0.5" RelativeTo="Size" Easing="Linear" />
+		    </RemovingAnimation>
+			<Each Items="{colors}">
+				<Panel>
+					<Circle ux:Name="color_circle" Color="{color_code}" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+						<Clicked Handler="{h_color_change}">
+							<Set selection.Value="false"/>
+							<Toggle Target="opacity_toggle"/>
+							<Toggle Target="color_button_toggle"/>
+							<Set this.color_code="{color_code}"/>
+						</Clicked>
+					</Circle>
+				</Panel>
+			</Each>
+		</StackPanel>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="color_button_toggle" Value="false">
+		<Set color_button.Value="true" Delay="0.5"/>
+		<Toggle Target="color_button_toggle" Delay="0.5"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="color_button" Value="true">
+
+		<Panel Alignment="Bottom" Opacity="0.3">
+			<AddingAnimation>
+		        <Move Y="2.5" Duration="0.2" RelativeTo="Size" Easing="Linear" />
+		    </AddingAnimation>
+		    <RemovingAnimation>
+		    	<Move Y="2.5" Duration="0.2" RelativeTo="Size" Easing="Linear" />
+		    </RemovingAnimation>
+		    <Circle Width="22" Height="22" StartAngleDegrees="35" LengthAngleDegrees="290">
+				<Stroke Color="#fff" Width="5"/>
+			</Circle>
+			<Circle Width="40" Height="40" Color="{ReadProperty this.color_code}" >
+				<Stroke Color="#fff" Width="5"/>
+			</Circle>
+			<Clicked>
+				<Toggle Target="selection_toggle"/>
+				<Toggle Target="opacity_toggle"/>
+				<Set color_button.Value="false"/>
+			</Clicked>
+		</Panel>
+	</WhileTrue>
+</Panel>

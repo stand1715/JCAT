@@ -1,0 +1,5 @@
+<Panel ux:Class="LogoMenu.Panel">
+	<Rectangle Alignment="Center" Y="6" Color="#fff" Width="40%" Height="10%"/>
+	<Rectangle Alignment="Center" Color="#fff" Width="40%" Height="10%"/>
+	<Rectangle Alignment="Center"  Y="-6" Color="#fff" Width="40%" Height="10%"/>
+</Panel>

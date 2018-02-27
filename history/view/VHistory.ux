@@ -1,0 +1,141 @@
+<Rectangle ux:Class="VHistory" Transition="None" ClipToBounds="true" CornerRadius="2">
+	<!-- <EnteringAnimation>
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</ExitingAnimation>
+ -->
+	<Router ux:Dependency="app_router" />
+
+	<JavaScript>
+		let c_history = require ('history/controllers/CHistory');
+		let m_history = require ('history/models/MHistory');
+
+		c_history.read_record();
+
+		module.exports =
+		{	
+			level: ["N1", "N2", "N3", "N4", "N5"],
+			mode: ["名", "形", "動"],
+			select: function(arg){c_history.select(arg);},
+			data_obs: m_history.data_obs,
+			delete_record: c_history.delete_record
+		}
+	</JavaScript>
+
+<Grid Rows="auto,auto,1*" Margin="20">
+
+	<!-- Title -->
+	<Text Value="Notes" Alignment="TopCenter" Font="Governor" FontSize="24" Color="#ffffffCC" Margin="0,-4,0,16"/>
+
+	<!-- Class -->
+<!-- 	<Panel ux:Class="SelectLevelCircle" Level="" >
+		<string ux:Property="Level"/>
+
+		<Panel ux:Name="circle" Opacity="0.2">
+			<Circle Height="32" Color="#fff" >
+				<Text Alignment="Center" Value="{ReadProperty this.Level}" Font="Japanese" Color="#002151" FontSize="22" Offset="0,1"/>
+			</Circle>
+			<Circle ux:Name="circle_spin" Height="39" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+				<Stroke Width="2" Color="#fff"/>
+			</Circle>
+		</Panel>
+		<Clicked Handler="{select}" >
+			<Toggle Target="circle_spin_toggle"/>
+		</Clicked>
+		<WhileTrue ux:Name="circle_spin_toggle" Value="true">
+			<Change circle.Opacity="1" Duration="0.5"/>
+			<Change circle_spin.StartAngleDegrees="-269.99" Duration="0.5" Delay="0"/>
+			<Change circle_spin.EndAngleDegrees="90" Duration="0.5" Delay="0"/>
+		</WhileTrue>
+	
+	</Panel> -->
+
+	<Panel ux:Class="SelectLevelRect" Level="" >
+		<string ux:Property="Level"/>
+
+		<Panel ux:Name="rect" Opacity="0.4">
+			<Rectangle Height="36" Color="#ffffffCC" CornerRadius="2">
+				<Text Alignment="Center" Value="{ReadProperty this.Level}" Font="Japanese" Color="#002151" FontSize="22" Offset="0,1"/>
+			</Rectangle>
+			<!-- <Rectangle ux:Name="circle_spin" Height="39" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+				<Stroke Width="2" Color="#fff"/>
+			</Rectangle> -->
+		</Panel>
+		<Clicked Handler="{select}" >
+			<Toggle Target="rect_spin_toggle"/>
+		</Clicked>
+		<WhileTrue ux:Name="rect_spin_toggle" Value="true">
+			<Change rect.Opacity="1" Duration="0.5"/>
+		<!-- 	<Change circle_spin.StartAngleDegrees="-269.99" Duration="0.5" Delay="0"/>
+			<Change circle_spin.EndAngleDegrees="90" Duration="0.5" Delay="0"/> -->
+		</WhileTrue>
+	
+	</Panel>
+
+	<StackPanel Margin="6">
+
+		<Grid Alignment="Top" ColumnCount="5" Width="100%" Height="50" CellSpacing="2">
+			<Each Items="{level}" >
+				<SelectLevelRect Level="{}"/>
+			</Each>
+		</Grid>
+
+		<Grid Alignment="Top" ColumnCount="3" Width="100%" Height="50" CellSpacing="2">
+			<Each Items="{mode}" >
+				<SelectLevelRect Level="{}"/>
+			</Each>
+		</Grid>
+
+	</StackPanel>
+
+	<!-- History list -->
+	<Rectangle Margin="6">
+		<Stroke Width="1" Brush="#ffffff50"/>
+		<Panel Padding="5">
+			<WhileEmpty Items="{data_obs}">
+				<Change none.Opacity="0.5" Duration="0.3"/>
+				<Text ux:Name="none" Alignment="Center" Value="- なし -" TextColor="#fff" Opacity="0"/>
+			</WhileEmpty>
+			<WhileNotEmpty Items="{data_obs}">
+				<Change list.Opacity="1" Duration="0.3"/>
+			<ScrollView ux:Name="list" Opacity="0" ClipToBounds="true" Alignment="Top" >
+				<StackPanel ItemSpacing="1">
+					<Each Items="{data_obs}" Defer="Deferred">
+					<!-- <Each Count="16"> -->
+						<Panel>
+
+							<!-- Word, hiragana, meaning -->
+							<Panel Offset="6,1" Alignment="CenterLeft" Width="100%">
+								<Text Value="{word}" FontSize="15" Color="#fff" X="0%" MaxWidth="30%"/>
+								<Text Value="{hiragana}" FontSize="15" X="30%" Color="#fff" MaxWidth="33%"/>
+								<Text Value="{meaning}" FontSize="15" X="63%" Color="#fff" />
+							</Panel>
+
+							<!-- <WhileTrue Value="{correctness}"> -->
+								<!-- White -->
+								<Rectangle Fill="#fff" Opacity="0.1" Height="30" Width="100%"/>
+							<!-- </WhileTrue> -->
+
+							<!-- <WhileFalse Value="{correctness}"> -->
+								<!-- Dark -->
+								<!-- <Rectangle Fill="#000" Opacity="0.3" Height="30" Width="100%"/> -->
+							<!-- </WhileFalse> -->
+
+						</Panel>
+					</Each>
+				</StackPanel>
+			</ScrollView>
+		</WhileNotEmpty>
+		</Panel>
+	</Rectangle>
+</Grid>
+	<!-- Back Button -->
+	<!-- <BackButton.Panel app_router="app_router"/> -->
+
+	<!-- Delete -->
+<!-- 	<Text Value="X" Alignment="TopRight" TextColor="#fff">
+		<Clicked Handler="{delete_record}"/>
+	</Text> -->
+</Rectangle>

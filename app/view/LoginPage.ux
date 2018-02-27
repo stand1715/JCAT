@@ -1,0 +1,223 @@
+<Page ux:Class="LoginPage" Height="100%" Transition="None">
+
+	<JavaScript>
+		let m_app = require ('app/models/MApp'); 
+		
+	    module.exports = {
+	        enter_question: function() { 
+	        	app_router.push("v_question", {}, "v_question_select");
+	        	},
+	       	enter_memorizing: function() { 
+	        	app_router.push("v_memorizing", {}, "v_memorizing_select");
+	        	},
+	        bg_path: m_app.bg_path,
+	        isColorChanged: m_app.isColorChanged,
+	        is_info: m_app.is_info,
+	        is_notes: m_app.is_notes,
+	        close_info: function(){
+	        	m_app.is_info.value = false;
+	        },
+	        close_notes: function(){
+	        	m_app.is_notes.value = false;
+	        }
+	    };
+	</JavaScript>
+
+	<Activated>
+		<PlaySound ux:Name="music" File="../assets/sound/bgm_healing17.mp3"/>
+	</Activated>
+
+	<Router ux:Dependency="app_router" />
+
+	<!-- *********** Animation ********** -->
+	<EnteringAnimation>
+		<Move Target="upper_part" RelativeTo="Size" Y="-1" Duration="0.5"/>
+		<Move Target="lower_part" RelativeTo="Size" Y="1" Duration="0.5"  />
+		<!-- <Change this.Opacity="0" Delay="1" Easing="CubicIn"/> -->
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Move Target="upper_part" RelativeTo="Size" Y="-1" Duration="0.3"/>
+		<Move Target="lower_part" RelativeTo="Size" Y="1" Duration="0.3"/>
+		<!-- <Change this.Opacity="0" Duration="0.5" Easing="CubicIn"/> -->
+	</ExitingAnimation>
+
+	<!-- History Popup -->
+	<WhileTrue Value="{is_notes}">
+		<Change notes.Opacity="1" Duration="0.3"/>
+		<VHistory ux:Name="notes" app_router="app_router" Color="#000000B3" Opacity="0" Height="90%" Width="90%" >
+			<!-- Close button -->
+			<Image Alignment="TopRight" Height="30" Margin="12" File="../../app/assets/close.png">
+				<Clicked Handler="{close_notes}"/>
+			</Image>
+		</VHistory>
+	</WhileTrue>
+
+	<!-- Information Popup -->
+	<WhileTrue Value="{is_info}">
+		<Change info.Opacity="1" Duration="0.3"/>
+		<Rectangle ux:Name="info" Color="#00000099" Width="90%" Alignment="Center" Opacity="0" CornerRadius="2">
+			<StackPanel Margin="10" ItemSpacing="10" >
+				<Text TextColor="#fff" FontSize="12"> Info. </Text>
+				<Text ux:Class="TextInfo" TextColor="#fff" FontSize="10" TextWrapping="Wrap" Margin="5,0,3,0"/>
+				<TextInfo>JapanCat is created by a graduate student from City University of Hong Kong, who loves Japanese and programming. It aims to help Japanese learners to memorize new vocabularies in a better way. </TextInfo>
+				<TextInfo>Hope you enjoy this!</TextInfo>
+				<TextInfo>Feel free to contact me if you have any comment, cooperation request or working opportunity for me. </TextInfo>
+				<TextInfo>このアプリは香港城市大学の卒業生に作られ、日本語学習者がより良い方法で語彙を覚えるためである。</TextInfo>
+				<TextInfo>お楽しみください。</TextInfo>
+				<TextInfo>もし何かコメントがあったら、お気軽に連絡してください。</TextInfo>
+				<TextInfo Margin="0,5,0,0" Alignment="Right">stand1715@hotmail.com</TextInfo>
+			</StackPanel>
+			<Clicked Handler="{close_info}"/>
+		</Rectangle>
+	</WhileTrue>
+
+	<!-- *********** Upper ********** -->
+	<Panel Alignment="Top" Height="50%" ux:Name="upper_part" Color="#666E9030" ClipToBounds="true">
+		
+		<!-- Music -->
+		<!-- <Image File="../assets/music.png" Height="38" Alignment="TopRight" Margin="8">
+			<Clicked>
+				<Set music.When="Stop"/>
+			</Clicked>
+		</Image> -->
+
+		<!-- JAPAN CAT text -->
+		<StackPanel Offset="0,60" Alignment="Center" Orientation="Horizontal">
+			<Text Font="Governor" FontSize="24" TextColor="#ffffff" Value="JAPAN"/>
+			<Text Font="Governor" FontSize="24" TextColor="#d3f0ff" Value="CAT"/>
+		</StackPanel>
+
+		<!-- <Rectangle Alignment="Bottom" Width="100%" Height="1" Color="#fff" Offset="0,1"/> -->
+
+		<Image Alignment="Center" Height="20%" File="../assets/icon_tutor_cat.png" Color="#ffffff"/>
+		<!-- <Image Alignment="Center" Height="21%" File="../assets/icon_tutor_cat.png" Color="#00215150"> -->
+			<!-- <Blur Radius="1"/> -->
+		<!-- </Image> -->
+		
+	</Panel>
+
+	<!-- *********** Lower ********** -->
+	<Panel Alignment="Bottom" Height="50%" ux:Name="lower_part" Color="#666E9030" ClipToBounds="false">
+		<!-- door line -->
+		<!-- <Rectangle Alignment="Top" Width="100%" Height="1" Color="#fff" Offset="0,-1"/> -->
+
+		<!-- Copyright -->
+		<Text Alignment="BottomCenter" Margin="14" Color="#ffffff50" FontSize="10">Copyright © 2018 by Lee Kwok Lung</Text>
+
+		<Color.Panel Alignment="BottomLeft"/>
+	
+		<Menu.Panel Alignment="BottomRight" app_router="app_router"/>
+
+		<Grid Alignment="Top" ColumnCount="2" Width="70%" Offset="0,10">
+			<Panel ux:Name="select1" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="問" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/> 
+				</Circle>
+				<Circle ux:Name="circle1_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle1_spin2" Height="66"/>
+
+				<WhileTrue ux:Name="circle1_toggle" Value="false">
+					<!-- <WhileTrue Value="{ReadProperty circle2_toggle.Value}"> -->
+						<Set circle2_toggle.Value="false"/>
+						<Set circle2_click_toggle.Value="false"/>
+						<Change select1.Opacity="1" Duration="0.5"/>
+						<Change mouth.Opacity="1" Duration="0.5"/>
+						<Change eyes.Opacity="1" Duration="0.5"/>
+						<Change eye1.Height="30" Duration="0.5"/>
+						<Change eye2.Height="30" Duration="0.5"/>
+						<Change enter.Opacity="1" Duration="0.5"/>
+						<Change circle1_spin1.StartAngleDegrees="-269.99" Duration="0.5"/>
+						<Change circle1_spin1.EndAngleDegrees="90" Duration="0.5"/>
+						<Change enter.IsEnabled="true"/>
+					<!-- </WhileTrue> -->
+				</WhileTrue>
+
+				<Clicked>
+					
+					<Toggle Target="circle1_toggle"/>
+					<Toggle Target="circle1_click_toggle"/>
+					<!-- <WhileTrue ux:Name="select_sound" Value="true"> -->
+						<PlaySound ux:Name="select_sound" File="../assets/sound/select_sound.mp3" />
+						<!-- <Set Target="select_sound" File="../assets/sound/onepoint26.mp3"/> -->
+						<!-- <Toggle Target="select_sound"/> -->
+					<!-- </WhileTrue> -->
+				</Clicked>
+			</Panel>
+
+			<Panel ux:Name="select2" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="覚" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="circle2_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle2_spin2" Height="66">
+					<!-- <Stroke Width="2" Color="#fff"/> -->
+				</Circle>
+				<WhileTrue ux:Name="circle2_toggle" Value="false">
+					<!-- <Spin Target="circle1_spin1" Frequency="0.7"/> -->
+					<Set circle1_toggle.Value="false"/>
+					<Set circle1_click_toggle.Value="false"/>
+					<Change select2.Opacity="1" Duration="0.5"/>
+					<Change mouth.Opacity="1" Duration="0.5"/>
+					<Change eyes.Opacity="1" Duration="0.5"/>
+					<Change eye1.Height="30" Duration="0.5"/>
+					<Change eye2.Height="30" Duration="0.5"/>
+					<Change enter.Opacity="1" Duration="0.5"/>
+					<Change circle2_spin1.StartAngleDegrees="-269.99" Duration="0.5"/>
+					<Change circle2_spin1.EndAngleDegrees="90" Duration="0.5"/>
+					<Change enter.IsEnabled="true"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="circle2_toggle"/>
+					<Toggle Target="circle2_click_toggle"/>
+					<PlaySound File="../assets/sound/select_sound.mp3" />
+				</Clicked>
+			</Panel>
+
+		</Grid>
+
+		<Grid ux:Name="eyes" ColumnCount="2" Opacity="0.3">
+			<Ellipse ux:Name="eye1" Height="1" Width="30" Color="#fff"/>
+			<Ellipse ux:Name="eye2" Height="1" Width="30" Color="#fff"/>
+		</Grid>
+
+		<Image ux:Name="mouth" Alignment="Center" Height="18" Opacity="0" File="../assets/catmouth.png" Offset="0,60"/>
+
+		<Text ux:Name="enter" IsEnabled="false" Alignment="Center" Value="Enter" FontSize="30" Font="Governor" Color="#ffffff" Opacity="0.3">
+			<WhileTrue ux:Name="circle1_click_toggle" Value="false">
+				<Clicked Handler="{enter_question}"/>
+			</WhileTrue>
+			<WhileTrue ux:Name="circle2_click_toggle" Value="false">
+				<Clicked Handler="{enter_memorizing}"/>
+			</WhileTrue>
+			<Clicked>
+				<Set circle1_toggle.Value="false" Delay="0.5"/>
+				<Set circle2_toggle.Value="false" Delay="0.5"/>
+				<Set circle1_click_toggle.Value="false" Delay="0.5"/>
+				<Set circle2_click_toggle.Value="false" Delay="0.5"/>
+				<!-- <Set enter.IsEnabled="true" Delay="0.5"/> -->
+				<PlaySound File="../assets/sound/enter_sound.mp3" />
+			</Clicked>
+			<WhilePressed>
+				<!-- <Spin Duration="10"/> -->
+				<Scale Factor="0.9"/>
+			</WhilePressed>
+		</Text>
+	</Panel>
+
+	<WhileTrue ux:Name="color_change_toggle" Value="{isColorChanged}">
+		<Change Target="bg.Opacity">
+			 <Keyframe Value="0.5" TimeDelta="0.5"/>
+             <!-- <Keyframe Value="1" TimeDelta="0.5"/> -->
+		</Change>
+		<Toggle Target="color_change_toggle" Delay="0.5"/>
+	</WhileTrue>
+
+	<!-- <Image -->
+	<Image ux:Name="bg" File="{bg_path}" StretchMode="UniformToFill"/>
+
+</Page>

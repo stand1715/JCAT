@@ -1,0 +1,6 @@
+<Rectangle ux:Class="AddPopup.Rectangle" Alignment="Center" CornerRadius="12" Color="#bfbfbf" Height="35" word="">
+	<string ux:Property="word"/>
+	<StackPanel Alignment="Center" Orientation="Horizontal" Margin="10" Offset="0,-1">
+		<Text Value="{Property word} Added" Color="#000" Alignment="Center" FontSize="16" Opacity="1"/>
+	</StackPanel>
+</Rectangle>

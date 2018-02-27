@@ -1,0 +1,23 @@
+{
+  "RootNamespace":"",
+  "Packages": [
+  	"Fuse",
+  	"FuseJS",
+  	"Fuse.Animations",
+    "Fuse.Audio"
+  ],
+  "Includes": [
+    "*",
+    "**.json:Bundle",
+    "question/controllers/*.js:Bundle",
+    "question/models/*.js:Bundle",
+    "history/controllers/*.js:Bundle",
+    "history/models/*.js:Bundle",
+    "memorizing/controllers/*.js:Bundle",
+    "app/models/*.js:Bundle",
+    "app/controllers/*.js:Bundle",
+    "app/assets/*.png:Bundle",
+    "app/assets/sound/*:Bundle",
+    "android_support.uxl"
+  ]
+}

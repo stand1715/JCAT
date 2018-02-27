@@ -1,0 +1,45 @@
+<Panel ux:Class="CountDown.Panel" Alignment="Center" Transition="None">
+	
+	<JavaScript>
+	let Timer = require("FuseJS/Timer");
+	let c_timer = require ('question/controllers/CTimer');
+	let m_question = require ('question/models/MQuestion'); 
+
+	// m_question.current_choice_obs.clear();
+	
+	Timer.create(function() {
+		c_timer.c_start_timer();
+		app_router.goto("v_question", {} , "v_question_play"); 
+	}, 3000, false);
+	</JavaScript>
+
+	<Router ux:Dependency="app_router" />
+
+	<Activated>
+		<Set count_down.TargetProgress="1" />
+	</Activated>
+
+	<Text ux:Class="Num" Value="3" Alignment="Center" FontSize="80" Color="#fff"/>
+
+	<Num ux:Name="num3" Value="3" Opacity="0"/>
+	<Num ux:Name="num2" Value="2" Opacity="0"/>
+	<Num ux:Name="num1" Value="1" Opacity="0"/>
+
+	<Timeline ux:Name="count_down">
+		<Change Target="num3.Opacity">
+			<Keyframe Value="1" Time="0.5" />
+       		<Keyframe Value="0" Time="1.0" />
+		</Change>
+		<Change Target="num2.Opacity" Delay="1">
+			<Keyframe Value="1" Time="0.5" />
+       		<Keyframe Value="0" Time="1.0" />
+		</Change>
+		<Change Target="num1.Opacity" Delay="2">
+			<Keyframe Value="1" Time="0.5" />
+       		<Keyframe Value="0" Time="1.0" />
+		</Change>
+		<!-- <Set count_down.TargetProgress="0" Delay="3"/> -->
+		<Set count_down.InitialProgress="0" Delay="3"/>
+	</Timeline>
+
+</Panel>

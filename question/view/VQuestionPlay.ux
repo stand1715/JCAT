@@ -1,0 +1,292 @@
+<Page ux:Class="VQuestionPlay" Transition="None">
+	<EnteringAnimation>
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</ExitingAnimation>
+
+	<Activated>
+
+	</Activated>
+
+	<Popup.Panel ux:Dependency="popup_pause">
+		<!-- <Clicked Handler="{record}"/> -->
+	</Popup.Panel>
+
+	<Router ux:Dependency="app_router" />
+
+	<JavaScript>
+		let Observable = require('FuseJS/Observable');
+		let Timer = require("FuseJS/Timer");
+		let m_question = require ('question/models/MQuestion'); 
+		let c_question = require ('question/controllers/CQuestion');
+		let c_timer = require ('question/controllers/CTimer');
+
+		m_question.correct_num.value = 0;
+		m_question.wrong_num.value = 0;
+
+		let test_bool = Observable(false);
+
+		function h_clicked(arg){
+			m_question.is_clickable.value = false;
+			c_question.c_next_question();
+		}
+
+		h_time_up();
+
+		// Timer checking
+		function h_time_up(){
+			let timer_count = Timer.create(function() {
+				// time up
+				if (m_question.timer.value >= 19.9){
+					app_router.goto("v_question", {} , "v_question_result");
+					Timer.delete(timer_count);
+				}
+			}, 300, true); 
+		}
+
+		h_time_record();
+
+		function h_time_record(){
+			console.log("- record start -");
+			m_question.time_record_array.clear();
+			record();
+		}
+
+		function record(){
+			let timer_record = Timer.create(function() {
+				m_question.time_record_array.add(m_question.timer.value*2.95);
+				if (m_question.timer.value >= 19.9){
+					m_question.time_record_array.add(59);
+					Timer.delete(timer_record);
+				}
+			}, 1000, true); 
+		}
+
+		module.exports =
+		{	
+			h_back: function() { 
+				app_router.goto("v_login_page");
+				Timer.delete(timer_count);
+				Timer.delete(timer_record);
+			},
+			choice: m_question.current_choice_obs,
+			item: m_question.current_item_obs,
+			h_clicked,
+			timer: m_question.timer,
+			timer_freeze: m_question.timer_freeze,
+			timer_total: m_question.timer_total,
+			time_fraction: m_question.time_fraction,
+			current_level_obs: m_question.current_level_obs,
+			current_mode_obs: m_question.current_mode_obs,
+			pause: function(){c_timer.c_pause_timer();},
+			count: function(){c_timer.c_start_timer();},
+			add: function(){c_question.c_correct();m_question.correct_num.value++;c_timer.c_add_timer();},
+			minus: function(){c_question.c_wrong();m_question.wrong_num.value++;c_timer.c_minus_timer();},
+			record:record,
+			is_clickable: m_question.is_clickable,
+			correct_num: m_question.correct_num,
+			wrong_num: m_question.wrong_num,
+			is_pause: m_question.is_pause
+		}
+
+	</JavaScript>
+
+	<!-- Timing start -->
+	<!-- <Grid ColumnCount="6" Alignment="Center" Width="80%">
+		<Text Value="Count" Color="#fff">
+			<Clicked Handler="{count}">
+			</Clicked>
+		</Text>
+		<Text Value="Add" Color="#fff">
+			<Clicked Handler="{add}">
+				<Toggle Target="add_toggle"/>
+			</Clicked>
+		</Text>
+		<Text Value="Pause" Color="#fff">
+			<Clicked Handler="{pause}">
+			</Clicked>
+		</Text>
+		<Text Value="minus" Color="#fff">
+			<Clicked Handler="{minus}">
+				<Toggle Target="minus_toggle"/>
+			</Clicked>
+		</Text>
+		<Text Value="{timer}" Color="#fff" MaxLength="4"/>
+		<Text Value="{timer_freeze}" Color="#fff" MaxLength="4"/>
+		<Text Value="{timer_total}" Color="#fff" MaxLength="4"/>
+	</Grid>  -->
+
+	<!-- TimeCircle  TODO try to make the animation by ux instead of using timer from js-->
+	<Panel Alignment="TopCenter" Height="50%" Width="70%" Offset="0,10%" >
+		
+		<!-- *************** Add animation *************** -->
+		<!-- <WhileTrue ux:Name="add_animation_toggle"> -->
+			<Circle ux:Name="add_time_circle" Width="100%" StartAngleDegrees="240 - ({time_fraction}*{timer})" EndAngleDegrees="240 - ({time_fraction}*{timer_freeze})" Opacity="0">
+				<Rotation Degrees="150"/>
+				<Stroke Width="10" Color="#84ffd8" LineCap="Round"/>
+			</Circle>
+		<!-- </WhileTrue> -->
+
+		<!-- ****************** Minus animation ****************** -->
+		<!-- <WhileTrue ux:Name="add_animation_toggle"> -->
+			<Circle ux:Name="minus_time_circle" Width="100%" StartAngleDegrees="240 - ({time_fraction}*({timer_freeze}))" LengthAngleDegrees="({time_fraction}* ( {timer_freeze} - {timer}))" Opacity="0">
+				<Rotation Degrees="150"/>
+				<Stroke Width="10" Color="Red" LineCap="Round"/>
+			</Circle>
+		<!-- </WhileTrue> -->
+
+		<!-- ********************* Time Circle ********************* -->
+		<!-- 240 - (240/X * timer) < X = total time -->
+		<!-- <WhileFloat Value="240-({time_fraction}*{timer})" LessThanEqual="240"> -->
+			<Circle ux:Name="time_circle" Width="100%" StartAngleDegrees="-210" LengthAngleDegrees="240-({time_fraction}*{timer})">
+				<Stroke Width="10" Color="#fff" LineCap="Round"/>
+			</Circle>
+		<!-- </WhileFloat> -->
+
+	<!-- 	<Circle Width="100%" StartAngleDegrees="-210" LengthAngleDegrees="240" >
+			<Stroke Width="1" Color="#FFF3" LineCap="Round"/>
+		</Circle> -->
+
+		<!-- ********************* Time Circle BG ********************* -->
+			<Circle ux:Name="time_circle_bg" Width="100%" StartAngleDegrees="-210" LengthAngleDegrees="240" Opacity="0.1">
+				<DropShadow Size="5" Spread="0.3" Distance="1"/>
+				<Stroke Width="10" Color="#fff" LineCap="Round"/>
+			</Circle>
+		<!-- </WhileFloat> -->
+
+		<!-- word & meaning -->
+		<StackPanel ux:Name="word" Alignment="Center" Offset="0,0">
+			<Text Alignment="Center" Value="{item.word}" FontSize="34" Font="Japanese" Color="#fff" />
+			<Text Alignment="Center" Value="{item.meaning}" FontSize="14" Font="Japanese" Color="#d3f0ff" Offset="0,10"/>
+		</StackPanel>
+	</Panel>
+
+	<!-- ************************************ 
+					Choices 
+	************************************ -->
+	<Grid Alignment="Bottom" Width="100%" Height="50%" Padding="65,55">
+		<!-- <Selection/> -->
+		<Each Items="{choice}" Limit="4" >
+			<Panel ux:Name="choice_box" Opacity="1" Width="100%" Padding="5">
+
+				<Text ux:Name="answer" Value="{answer}" Font="Japanese" Alignment="Center" Color="#003e7c" FontSize="20" Margin="5,0" Offset="0,2"/>
+
+				<!-- Correct Color -->
+				<WhileTrue ux:Name="chose_toggle">
+					<WhileTrue Value="{is_correct}">
+						<!-- <Set choice_color.Color="#89ffd7" /> -->
+						<Rectangle CornerRadius="3" Color="#84ffd8" Margin="2"/>
+						<!-- <Change choice_box.Opacity="0.3"/> -->
+					</WhileTrue>
+					<WhileFalse Value="{is_correct}">
+						<!-- <Set choice_color.Color="#89ffd7" /> -->
+						<Rectangle CornerRadius="3" Color="Red" Margin="2"/>
+					</WhileFalse>
+				</WhileTrue>
+
+				<Rectangle CornerRadius="3" Color="#fff"/>
+
+<!-- 				<Rectangle ux:Name="left_line" Alignment="Right" Fill="#fff" Height="100%" Width="3" CornerRadius="3" Offset="10,0" Opacity="0.5"/>
+
+				<Rectangle ux:Name="right_line" Alignment="Left" Fill="#fff" Height="100%" Width="3" CornerRadius="3" Offset="-10,0" Opacity="0.5"/>
+ -->
+				<!-- animation -->
+				<WhileTrue ux:Name="chose_animation_toggle" Value="false">
+					<!-- <Change left_line.Width="36" Duration="0.3"/>
+					<Change left_line.Offset="43,0" Duration="0.3"/>
+					<Change right_line.Width="36" Duration="0.3"/>
+					<Change right_line.Offset="-43,0" Duration="0.3"/> -->
+				</WhileTrue>
+
+				<!-- clicked handler -->
+				<WhileTrue Value="{is_clickable}">
+					<Clicked Handler="{h_clicked}">
+						<!-- <ToggleSelection/> -->
+						<Toggle Target="chose_animation_toggle"/>
+						<Toggle Target="chose_toggle"/>
+						<Toggle Target="chose_toggle" Delay="0.6"/>
+					</Clicked>
+					<!-- pressed animation -->
+					<WhilePressed>
+						<Scale Factor="0.92" Duration="0.1"/>
+					</WhilePressed>
+
+					<WhileTrue Value="{is_correct}">
+						<Clicked Handler="{add}">
+							<Toggle Target="add_toggle"/>
+							<PlaySound File="../../app/assets/sound/correct_sound.mp3" />
+						</Clicked>
+					</WhileTrue>
+
+					<WhileFalse Value="{is_correct}">
+						<Clicked Handler="{minus}">
+							<Toggle Target="minus_toggle"/>
+							<PlaySound File="../../app/assets/sound/wrong_sound.mp3" />
+						</Clicked>
+					</WhileFalse>
+
+				</WhileTrue>
+			</Panel>
+
+		</Each>
+	</Grid>
+
+	<!-- Add animation -->
+	<WhileTrue ux:Name="add_toggle" Value="false">
+		<Change add_time_circle.Opacity="1" Duration="0.25"/>
+		<Change add_time_circle.Opacity="0" Duration="0.25" Delay="0.15"/>
+		<Toggle Target="add_toggle" Delay="0.25"/>
+	</WhileTrue>
+
+	<!-- Minus animation -->
+	<WhileTrue ux:Name="minus_toggle" Value="false">
+		<Change minus_time_circle.Opacity="1" Duration="0.25"/>
+		<Toggle Target="minus_toggle" Delay="0.25"/>
+	</WhileTrue>
+
+	<!-- Back Button -->
+	<BackButton.Panel app_router="app_router"/>
+
+	<!-- ************ pause ************ -->
+	<Panel Alignment="TopRight" Margin="14" Height="30" Width="30" Color="#ffffff00">
+		<Rectangle Alignment="Left" Height="100%" Width="33%" Color="#fff" CornerRadius="1"/>
+		<Rectangle Alignment="Right" Height="100%" Width="33%" Color="#fff" CornerRadius="1"/>
+		<Clicked Handler="{pause}">
+			<Set popup_pause.PopupEnabled="true"/>
+			<Set pause_toggle.Value="true"/>
+		</Clicked>
+	</Panel>
+
+	<WhileTrue ux:Name="pause_toggle" Value="{is_pause}">
+		<Change word.Visibility="Hidden"/>
+	</WhileTrue>
+	<!-- ************ current level mode ************ -->
+	<!-- <Grid Alignment="TopCenter" ColumnCount="2" Height="40" Margin="10" Opacity="0.5" CellSpacing="6"> -->
+		<!-- <Circle Height="32" Width="32" Color="#fff" > -->
+			<Text Alignment="TopCenter" Value="{current_level_obs}" Font="NumberBold" Color="#fff" FontSize="34" Margin="11" X="3"/> 
+		<!-- </Circle> -->
+<!-- 		<Circle Height="32" Width="32" Color="#fff" >
+			<Text Alignment="Center" Value="{current_mode_obs}" Font="Japanese" Color="#002151" FontSize="20" Offset="0,1"/>
+		</Circle> -->
+	<!-- </Grid> -->
+
+	<!-- ************ current correct & false ************ -->
+<!-- 	<Panel Alignment="TopLeft" Margin="14" Offset="0,100">
+		<Circle Width="26" Height="26" >
+			<Stroke Width="7" Color="#fff"/>
+		</Circle>
+		<Text Alignment="Center" Offset="0,30" Value="{correct_num}" Color="#fff" Font="Japanese" FontSize="20"/>
+	</Panel>
+	<Panel Alignment="TopRight" Margin="14" Offset="0,100" Height="26" Width="26">
+		<Rectangle Width="100%" Height="33%" Color="#fff">
+			<Rotation Degrees="45"/>
+		</Rectangle>
+		<Rectangle Width="33%" Height="100%" Color="#fff">
+			<Rotation Degrees="45"/>
+		</Rectangle>
+		<Text Alignment="Center" Offset="0,30" Value="{wrong_num}" Color="#fff" Font="Japanese" FontSize="20"/>
+	</Panel> -->
+	
+</Page>

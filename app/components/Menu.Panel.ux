@@ -1,0 +1,119 @@
+<Panel ux:Class="Menu.Panel" Margin="12" >
+
+	<Router ux:Dependency="app_router" />
+
+	<JavaScript>
+
+	let m_app = require ('app/models/MApp'); 
+	let c_app = require ('app/controllers/CApp'); 
+
+	function h_color_change(args){
+		c_app.h_color_change(args);
+	}
+
+	module.exports = {
+		colors: m_app.colors,
+		h_color_change: h_color_change,
+		current_color: m_app.current_color,
+		h_note_clicked: function(){
+			m_app.is_notes.value = !m_app.is_notes.value;
+		},
+		h_info_clicked: function(){ m_app.is_info.value = !m_app.is_info.value;},
+		h_share_clicked: function(){},
+		h_setting_clicked: function(){}
+	}
+
+	</JavaScript>
+
+	<WhileTrue ux:Name="opacity_toggle" Value="false">
+		<Change selection_list.Opacity="1" Duration="1"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="selection_toggle" Value="false">
+		<Set selection.Value="true" Delay="0.2"/>
+		<Toggle Target="selection_toggle" Delay="0.2"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="selection" Value="false" >
+		
+		<StackPanel ux:Name="selection_list" ItemSpacing="10" ContentAlignment="Bottom" Opacity="0.3">
+			<AddingAnimation>
+		        <Move Y="1" Duration="0.5" RelativeTo="Size" Easing="Linear" />
+		    </AddingAnimation>
+		    <RemovingAnimation>
+		    	<Move Y="1" Duration="0.5" RelativeTo="Size" Easing="Linear" />
+		    </RemovingAnimation>
+
+				<!-- Note -->
+				<Panel>
+					<Image File="../assets/note.png" Height="18"/>
+					<Circle Color="#ffffff00" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+					</Circle>
+					<Clicked Handler="{h_note_clicked}"/>
+				</Panel>
+				<!-- Info -->
+				<Panel>
+					<LogoInfo.Panel/>
+					<Circle Color="#ffffff00" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+					</Circle>
+					<Clicked Handler="{h_info_clicked}"/>
+				</Panel>
+				<!-- Share -->
+			<!-- 	<Panel>
+					<LogoShare.Panel/>
+					<Circle Color="#ffffff00" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+					</Circle>
+					<Clicked Handler="{h_share_clicked}"/>
+				</Panel> -->
+				<!-- Setting -->
+				<Panel>
+					<Image File="../assets/setting.png" Height="18"/>
+					<Circle Color="#ffffff00" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+					</Circle>
+					<Clicked Handler="{h_setting_clicked}"/>
+				</Panel>
+				<!-- Menu -->
+				<Panel Height="40">
+					<LogoMenu.Panel/>
+					<Circle Color="#ffffff00" Width="40" Height="40" >
+						<Stroke Color="#fff" Width="5"/>
+					</Circle>
+					<Clicked >
+						<Set selection.Value="false"/>
+						<Toggle Target="opacity_toggle"/>
+						<Toggle Target="color_button_toggle"/>
+					</Clicked>
+				</Panel>
+		</StackPanel>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="color_button_toggle" Value="false">
+		<Set color_button.Value="true" Delay="0.5"/>
+		<Toggle Target="color_button_toggle" Delay="0.5"/>
+	</WhileTrue>
+
+	<WhileTrue ux:Name="color_button" Value="true">
+
+		<Panel Alignment="Bottom" Opacity="0.3" Color="#ffffff00">
+			<AddingAnimation>
+		        <Move Y="2.5" Duration="0.2" RelativeTo="Size" Easing="Linear" />
+		    </AddingAnimation>
+		    <RemovingAnimation>
+		    	<Move Y="2.5" Duration="0.2" RelativeTo="Size" Easing="Linear" />
+		    </RemovingAnimation>
+		    <LogoMenu.Panel/>
+		    <Circle Width="40" Height="40" >
+				<Stroke Color="#fff" Width="5"/>
+			</Circle>
+			<Clicked>
+				<Toggle Target="selection_toggle"/>
+				<Toggle Target="opacity_toggle"/>
+				<Set color_button.Value="false"/>
+			</Clicked>
+		</Panel>
+	</WhileTrue>
+</Panel>

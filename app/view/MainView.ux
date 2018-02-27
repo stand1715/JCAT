@@ -1,0 +1,37 @@
+<App>
+
+	<!-- <Fuse.iOS.StatusBarConfig Style="Light" /> -->
+	<!-- <Android.StatusBarConfig Color="#fff" /> -->
+	<!-- <StatusBarBackground Dock="Top"/> -->
+	<!-- <BottomBarBackground Dock="Bottom"/> -->
+	<!-- <Android.StatusBarConfig IsVisible="false" /> -->
+
+	<Font File="../assets/font_governor.ttf" ux:Global="Governor"/>
+	<!-- <Font File="../assets/超世紀中黑體.TTF" ux:Global="Chinese"/> -->
+	<!-- <Font File="../assets/超世紀細圓體.TTF" ux:Global="ChineseBold"/> -->
+	<Font File="../assets/Japanese.ttf" ux:Global="Japanese"/>
+	<Font File="../assets/Montserrat-Regular.ttf" ux:Global="Number"/>
+	<Font File="../assets/Montserrat-Bold.ttf" ux:Global="NumberBold"/>
+	<!-- application level router -->
+	<Router ux:Name="app_router" />
+
+	<!-- <DockPanel> -->
+	    <!-- <StatusBarBackground Dock="Top" Background="#fff"/> -->
+		<DockPanel>
+			<Android.StatusBarConfig Color="#000" IsVisible="false" />
+    		<!-- <StatusBarBackground Dock="Top" Background="#000" /> -->
+			<Navigator DefaultPath="v_login_page">
+				<LoginPage ux:Template="v_login_page" app_router="app_router"/>
+				<VQuestion ux:Template="v_question" app_router="app_router"/>
+				<VMemorizing ux:Template="v_memorizing" app_router="app_router"/>
+				<!-- <VHistory ux:Template="v_history" app_router="app_router"/> -->
+			</Navigator>
+			<BottomBarBackground Dock="Bottom"/>
+		<!-- 	<Alive.NavBar>
+		        <Alive.BackButton Dock="Left" />
+		        <Alive.NavBarTitle>Page</Alive.NavBarTitle>
+		    </Alive.NavBar> -->
+		</DockPanel>
+		<!-- <BottomBarBackground Dock="Bottom" Background="#fff"/>  -->
+	<!-- </DockPanel> -->
+</App>

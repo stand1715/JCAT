@@ -1,0 +1,147 @@
+<Page ux:Class="VMemorizingPlay" Transition="None">
+	<EnteringAnimation>
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</ExitingAnimation>
+
+	<Router ux:Dependency="app_router" />
+
+	<WhilePageActive>
+		<Set transition_toggle.Value="false"/>
+		<Set answer.Opacity="0"/>
+		<Set meaning.Opacity="0"/>
+	</WhilePageActive>
+
+	<JavaScript>
+		let Observable = require('FuseJS/Observable');
+		let m_question = require ('question/models/MQuestion'); 
+		let c_question = require ('question/controllers/CQuestion');
+		let c_memorizing = require ('memorizing/controllers/CMemorizing');
+		let Storage = require("FuseJS/Storage");
+
+		// let Timer = require("FuseJS/Timer");
+
+		m_question.correct_num.value = 0;
+		m_question.wrong_num.value = 0;
+
+		let test_bool = Observable(false);
+		let length_ratio = Observable(0);
+
+		function h_next_word(arg){
+			
+			c_question.c_next_word();
+
+			// let Timer01 = Timer.create(function() {
+			// 	m_question.current_romaji_obs.replaceAll(c_memorizing.toRomaji(m_question.current_item_obs.value.hiragana));
+			// }, 100, true);
+
+			length_ratio.value = m_question.current_num_obs.value / m_question.data_length_obs.value * 100;
+
+		}
+
+		module.exports =
+		{	
+			h_back: function() { 
+				app_router.goto("v_login_page");
+				Timer.delete(timer_count);
+				Timer.delete(timer_record);
+			},
+			choice: m_question.current_choice_obs,
+			item: m_question.current_item_obs,
+			h_next_word,
+			current_level_obs: m_question.current_level_obs,
+			current_mode_obs: m_question.current_mode_obs,
+			correct_num: m_question.correct_num,
+			// current_romaji: m_question.current_romaji_obs,
+			wrong_num: m_question.wrong_num,
+			data_length: m_question.data_length_obs,
+			current_num_obs: m_question.current_num_obs,
+			length_ratio: length_ratio,
+			h_add_clicked: c_memorizing.h_add_clicked
+		}
+
+	</JavaScript>
+
+	<!-- add popup -->
+	<WhileTrue ux:Name="add_toggle" Value="false">
+		<Change add_popup.Opacity="1" Duration="0.2"/>
+		<AddPopup.Rectangle ux:Name="add_popup" word="{item.word}" Opacity="0"/>
+		<Set add_toggle.Value="false" Delay="0.8"/>
+	</WhileTrue>
+
+	<!-- add -->
+	<Image Alignment="TopRight" File="../../app/assets/add.png" Color="#fff" Height="32" Offset="0,0" Margin="12,15">
+		<Clicked Handler="{h_add_clicked}">
+			<Toggle Target="add_toggle"/>
+		</Clicked>
+	</Image> 
+
+	<!-- back button -->
+	<BackButton.Panel app_router="app_router">
+		<Clicked>
+			<Set answer_toggle.Value="false"/>
+			<Set open_answer_toggle.Value="true"/>
+			<Set next_word_toggle.Value="false"/>
+		</Clicked>
+	</BackButton.Panel>
+
+	<!-- click-->
+	<Panel Color="#fff" Opacity="0">
+		<WhileTrue ux:Name="open_answer_toggle" Value="true">
+			<Clicked>
+				<Toggle Target="answer_toggle"/>
+				<Set next_word_toggle.Value="true"/>
+				<Set open_answer_toggle.Value="false"/>
+			</Clicked>
+		</WhileTrue>
+		<WhileTrue ux:Name="next_word_toggle" Value="false">
+			<Clicked Handler="{h_next_word}">
+				<Toggle Target="transition_toggle"/>
+				<Set answer_toggle.Value="false"/>
+				<Set next_word_toggle.Value="false"/>
+				<Set open_answer_toggle.Value="true"/>
+			</Clicked>
+		</WhileTrue>
+	</Panel>
+
+	<!-- transition -->
+	<WhileTrue ux:Name="transition_toggle" Value="false">
+			<Change answer.Opacity="0" Duration="0.2"/>
+			<Change meaning.Opacity="0" Duration="0.2"/>
+			<Change word.Opacity="0" Duration="0.2"/>
+			<!-- <Change romaji.Opacity="0" Duration="0.2"/> -->
+			<Toggle Target="transition_toggle" Delay="0.3"/>
+	</WhileTrue>
+
+	<!-- word -->
+	<Text ux:Name="word" Alignment="TopCenter" Y="32%" Value="{item.word}" Color="#fff" FontSize="50"/>
+
+	<!-- meaning & hiragana -->
+	<WhileTrue ux:Name="answer_toggle" Value="false">
+		<Change meaning.Opacity="1" Duration="0.2"/>
+		<Change hiragana.Opacity="1" Duration="0.2"/>
+		<!-- <Change romaji.Opacity="1" Duration="0.2"/> -->
+		<StackPanel ux:Name="answer" Alignment="TopCenter" Y="52%" Opacity="1" ItemSpacing="10">
+			<Text ux:Name="meaning" Value="{item.meaning}" Color="#e0fbff" FontSize="20" Alignment="Center" Opacity="0"/>
+			<Text ux:Name="hiragana" Value="{item.hiragana}" Color="#fff" FontSize="33" Alignment="Center" Opacity="0"/>
+			<!-- <StackPanel ux:Name="romaji" Orientation="Horizontal" Opacity="0" ItemSpacing="5">
+				<Each Items="{current_romaji}">
+					<Text Value="{}" Color="#fff" FontSize="9" />
+				</Each>
+			</StackPanel> -->
+		</StackPanel>
+	</WhileTrue>
+
+	<!-- progress bar -->
+	<Panel Alignment="BottomCenter" Margin="0,20" Height="16" Width="80%" ClipToBounds="true">
+		<Rectangle CornerRadius="4">
+			<Stroke Width="2" Color="#fff"/>
+		</Rectangle>
+		<Rectangle Alignment="Left" Color="#fff" Margin="2" Width="{length_ratio}%" CornerRadius="3"/>
+	</Panel>
+
+	<!-- current level -->
+	<Text Alignment="TopCenter" Value="{current_level_obs}" Font="NumberBold" Color="#fff" FontSize="34" Margin="11"/> 
+</Page>

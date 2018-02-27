@@ -1,0 +1,55 @@
+<Panel ux:Class="Popup.Panel" PopupEnabled="false" >
+
+	<bool ux:Property="PopupEnabled"/>
+
+	<JavaScript>
+	let c_timer = require ('question/controllers/CTimer');
+	let m_question = require ('question/models/MQuestion');
+
+	function popup_close(){
+		c_timer.c_continue_timer();
+		m_question.is_pause.value = false;
+	}
+
+	module.exports={
+		popup_close
+	}
+	</JavaScript>
+	<!-- popup details - schedule -->
+	<WhileTrue Value="{ReadProperty PopupEnabled}">
+		<Panel>
+			<!-- <ActivatingAnimation>
+				<Change this.Opacity="1" Duration="1" />
+			</ActivatingAnimation> -->
+
+			<Panel Height="70" Width="70" Color="#ffffff00">
+
+				<Circle Width="70" StartAngleDegrees="-220" LengthAngleDegrees="255" >
+					<Stroke Width="10" Color="#fff" LineCap="Round"/>
+				</Circle>
+				<RegularPolygon Sides="3" Color="#fff" Height="20" Offset="24,18">
+					<Rotation Degrees="-25"/>
+				</RegularPolygon>
+
+				<Clicked Handler="{popup_close}">
+					<Set this.PopupEnabled="false"/>
+				</Clicked>
+				<WhilePressed>
+					<Scale Factor="1.15"/>
+				</WhilePressed>
+			</Panel>
+
+			<!-- cover -->
+			<Grid Alignment="Bottom" Width="100%" Height="50%" Padding="65,55" >
+				<Each Count="4" >
+					<Panel ux:Name="choice_box" Height="36" Width="100%" Padding="5">
+						<Rectangle CornerRadius="3" Color="#808080"/>
+					</Panel>
+				</Each>
+			</Grid>
+
+			<Rectangle Height="100%" Width="100%" Color="#000" Opacity="0.5"/>
+		</Panel>
+	</WhileTrue>
+
+</Panel>

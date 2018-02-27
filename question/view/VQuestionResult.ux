@@ -1,0 +1,459 @@
+<DockPanel ux:Class="VQuestionResult" Transition="None" >
+	<EnteringAnimation>
+		<Change this.Opacity="0" Duration="2" Easing="CubicIn" />
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="2" Easing="CubicIn" />
+	</ExitingAnimation>
+
+	<Router ux:Dependency="app_router" />
+
+	<JavaScript>
+	let Observable = require('FuseJS/Observable') 
+	let m_question = require ('question/models/MQuestion'); 
+	let c_question = require ('question/controllers/CQuestion');
+	// let c_memorizing = require ('memorizing/controllers/CMemorizing');
+	let Storage = require("FuseJS/Storage");
+
+	let score = (m_question.correct_num.value - m_question.wrong_num.value) * 10;
+
+	let percentage = m_question.correct_num.value/(m_question.wrong_num.value + m_question.correct_num.value)*100;
+
+	percentage = percentage.toFixed(0);
+
+	let wrong_percentage = 100 - percentage;
+	// m_question.time_record_array.replaceAll([1,3,5,8,10,11,15,18,20]);
+	
+	let record = Observable();
+	let line_array = Observable();
+	let record_length;
+
+	let arg_width;
+	read_record();
+
+	draw();
+	// record.replaceAll([2,20,30,15,0,30,50]);
+
+	record.replaceAll(m_question.time_record_array);
+
+	record_length = record.length;
+
+	function placed(arg){
+		if(!arg_width){
+			arg_width = arg.width;
+			console.log("arg_width: "+ arg.width);
+			init_chart(arg.width);
+		}
+	}
+
+	function draw(){
+		if(arg_width){
+			init_chart(arg_width);
+		}
+	}
+
+	function IsJsonString(str) {
+	    try {
+	        JSON.parse(str);
+	    } catch (e) {
+	        return false;
+	    }
+	    return true;
+	}
+
+	function read_record(){
+
+		let t_record = Storage.readSync(m_question.current_level_obs.value + m_question.current_mode_obs.value + ".txt");
+		// console.log("t_record: " + t_record); // json string
+
+		// m_question.record_obs
+		console.log("record_obs: " + m_question.record_obs); 
+		m_question.record_obs.forEach(function(item, index) {
+			console.log("-- map function --");
+		    console.log("item.word: " + item.word);
+		    
+		    if(t_record.includes(item.word)){
+		    	console.log("-- YES - included --")
+		    	item.is_record.value = true;
+		    } else {
+			    console.log("-- NO - not included --")
+			    item.is_record.value = false;
+			}
+		});
+		// console.log(is_record);
+	}
+
+	function init_chart(width){
+
+		for (let i = 0; i < record_length - 1; i++){
+			// fixed x distance
+			let x = width/(record_length);
+			// let x = 50;
+			// fixed y distance
+			let yPure = record.getAt(i) - record.getAt(i+1);
+			let y = Math.abs(record.getAt(i) - record.getAt(i+1));
+
+			// check which is longer
+			let offserY;
+
+			if (record.getAt(i) >= record.getAt(i+1)){
+				offsetY = record.getAt(i+1) + y/2;
+			} else {
+				offsetY = record.getAt(i) + y/2;
+			}
+
+			// console.log(y);
+
+			// console.log("yPure " + yPure + " x " + x +" yPure/x: "+yPure/x);
+
+			let opposelin = Math.sqrt(x*x + y*y);
+
+			let angle = Math.asin(yPure/opposelin)/(Math.PI / 180) * -1;
+			// console.log("Angle: " + angle);
+
+			let lenlin = Math.sqrt(x*x + y*y);
+		    // console.log("LENGTH: " + lenlin);
+
+		    let lin_ratio = lenlin/x;
+
+		    let len_diff = x - lenlin;
+
+		    let item = {x: x, y: y, offsetY: offsetY, lenlin: lenlin, angle: angle, lin_ratio: lin_ratio, len_diff: len_diff};
+		    line_array.add(item);
+		}
+
+		// record.pop();
+	}
+
+	function h_note_toggle(arg){
+
+		console.log("--- add notes: " + arg.data.word);
+
+			// create file name 
+			let t_file_name = m_question.current_level_obs.value + m_question.current_mode_obs.value + ".txt";
+
+			console.log("t_file_name: " + t_file_name);
+
+			// read storage
+			let t_storage = Storage.readSync(t_file_name);
+
+			// console.log("t_storage: " + t_storage);
+
+			if (t_storage == '') { // check emptyness
+
+				console.log("-- the file is empty --")
+
+				t_storage = '[]';
+			}
+			
+			// log the word contained
+
+			let is_contain = false;
+
+			t_storage = JSON.parse(t_storage);
+
+			t_storage.forEach(function(item, index) {
+				if (item.word == arg.data.word) is_contain = true;
+				console.log("storage: " + index + " " + item.word);
+			});
+			
+			// check if contain already
+			console.log("is_contain: "+ is_contain);
+
+			if (is_contain) { // contain
+
+				let index = t_storage.map(function(x){ return x.word; }).indexOf(arg.data.word);
+
+				console.log("index: "+ index);
+
+				t_storage.splice(index,1);
+
+				t_storage = JSON.stringify(t_storage);
+
+				// store
+				let success = Storage.writeSync( t_file_name, t_storage );
+
+				if(success) {
+					console.log("Successfully delete " + arg.data.word + " from "  + t_file_name);
+				}
+				else {
+					console.log("An error occured!");
+				}
+
+			} else {
+
+				t_storage.push(arg.data);
+
+				t_storage = JSON.stringify(t_storage);
+
+				// console.log("combined storage: " + t_storage);
+				
+				// store
+				let success = Storage.writeSync( t_file_name, t_storage );
+
+				if(success) {
+					console.log("Successfully wrote " + arg.data.word + " to "  + t_file_name);
+				}
+				else {
+					console.log("An error occured!");
+				}
+			}
+			// read_record();
+	}
+
+	module.exports={
+		time_record: m_question.time_record_array,
+		word_record: m_question.record_obs,
+		timer_total: m_question.timer_total,
+		correct_num: m_question.correct_num,
+		wrong_num: m_question.wrong_num,
+		score: score,
+		percentage: percentage,
+		wrong_percentage: wrong_percentage,
+		record: record,
+		record_length: record_length,
+		line_array: line_array,
+		placed: placed,
+		is_add_mode: m_question.is_add_mode,
+		h_note_toggle: h_note_toggle,
+		h_add_clicked: function(){
+			m_question.is_add_mode.value = !m_question.is_add_mode.value;
+		},
+		h_restart_clicked: function(){
+			m_question.time_record_array.clear();
+			c_question.c_retrieve_data(true);
+			setTimeout(
+				function() {
+					m_question.is_add_mode.value = false;
+					app_router.goto("v_question", {} , "v_count_down"); 
+				}, 500)}
+		}
+		</JavaScript>
+
+		<Activated>
+			<Set fade_in.Value="true"/>
+		</Activated>
+
+		<WhileTrue ux:Name="fade_in" Value="false">
+			<Change title_score.Opacity="1" Duration="1" />
+			<Change bar.Opacity="1" Duration="1" Delay="0.4"/>
+			<Change title_time.Opacity="1" Duration="1" Delay="0.8"/>
+			<Change chart.Opacity="1" Duration="1" Delay="1.2"/>
+			<Change title_history.Opacity="1" Duration="1" Delay="1.6"/>
+			<Change list.Opacity="1" Duration="1" Delay="2"/>
+			<Change exit.Opacity="1" Duration="2" Delay="1"/>
+		</WhileTrue>
+
+		<!-- Style -->
+		<Text ux:Class="SubTitle" Alignment="Left" Font="Governor" FontSize="26" Color="#fff"/>
+		<Text ux:Class="SubTitleChin" Alignment="Bottom" Font="Governor" FontSize="22" Color="#fff"/>
+
+		<!-- Title -->
+		<Text Value="Result" Alignment="TopCenter" Font="Governor" FontSize="34" Color="#fff" Margin="20"/>
+
+		<Grid Padding="0,80,0,0" ClipToBounds="true" Rows="auto,auto,1*">
+
+			<!-- Score -->
+			<StackPanel Margin="40,10" > 
+				<Panel ux:Name="title_score" Margin="0,0,0,5" Opacity="0" >
+					<!-- <StackPanel Orientation="Horizontal"> -->
+					<SubTitle Value="Score"/>
+					<!-- <SubTitleChin Value=" 点数"/> -->
+					<!-- </StackPanel> -->
+					<Text Value="{score}" Alignment="Right" Font="Governor" FontSize="26" Color="#fff"/>
+				</Panel>
+
+				<!-- Score bar -->
+				<StackPanel ux:Name="bar" Orientation="Horizontal" Opacity="0" >
+					<Panel>
+						<WhileFloat Value="{correct_num}" GreaterThan="0">
+							<Text Value="{correct_num}" Alignment="CenterLeft" Font="Governor" FontSize="14" Color="#fff" Margin="10,0" Opacity="1"/>
+						</WhileFloat>
+						<WhileFloat Value="{percentage}" GreaterThan="20">
+							<Text Value="{percentage}%" Alignment="CenterRight" Font="Governor" FontSize="14" Color="#fff" Margin="8,0" Opacity="1"/>
+						</WhileFloat>
+						<Rectangle Height="30" Width="width(bar)*{correct_num}/({correct_num}+{wrong_num})" Color="#fff" Opacity="0.3"/>
+					</Panel>
+					<Panel>
+						<WhileFloat Value="{wrong_num}" GreaterThan="0">
+							<Text Value="{wrong_num}" Alignment="CenterRight" Font="Governor" FontSize="14" Color="#fff" Margin="10,0" Opacity="0.6"/>
+						</WhileFloat>
+						<WhileFloat Value="{wrong_percentage}" GreaterThan="20">
+							<Text Value="{wrong_percentage}%" Alignment="CenterLeft" Font="Governor" FontSize="14" Color="#fff" Margin="8,0" Opacity="0.6"/>
+						</WhileFloat>
+						<Rectangle Height="30" Width="width(bar)*{wrong_num}/({correct_num}+{wrong_num})" Color="#000" Opacity="0.5"/>
+					</Panel>
+				</StackPanel>
+
+			</StackPanel>
+
+			<!-- Timeline -->
+			<StackPanel Margin="40,10" Width="100%" >
+				<Panel ux:Name="title_time" Margin="0,0,0,5" Opacity="0">
+					<SubTitle Value="Time" />
+					<Text Value=" {timer_total}" MaxLength="6" Alignment="Right" Font="Governor" FontSize="26" Color="#fff" Offset="0,0"/>
+					<!-- <Text Value="s" Font="Governor" FontSize="20" Alignment="Right" Color="#fff" Offset="0,5" /> -->
+				</Panel>
+
+				<Panel ux:Name="chart" Width="100%" Height="80" Placed="{placed}" Opacity="0">
+					<Grid ColumnCount="{record_length}" Width="100%" Alignment="Right">
+						<Each Items="{record}">
+							<Circle Height="3" Width="3" Color="#fff" Dock="Fill" Y="{}+19" X="-1" Alignment="Left" />
+						</Each>
+						<Each Items="{line_array}">
+							<Rectangle Height="1" Width="{lenlin}" Color="#ffffff50" Y="{offsetY}-20" X="{len_diff}/2" Alignment="Left" >
+								<Rotation Degrees="{angle}"/>
+							</Rectangle>
+						</Each>
+					</Grid>
+					<Rectangle Alignment="Left" Width="1" Height="100%" Color="#ffffff50"/>
+					<Rectangle Alignment="Bottom" Width="100%" Height="1" Color="#ffffff50"/>
+					<Rectangle Height="100%" Width="100%" Color="#00000030"/>
+				</Panel>
+
+			</StackPanel>
+
+			<!-- History -->
+			<Grid Margin="40,10,40,0" ClipToBounds="true" Rows="auto,1*">
+				<Panel ux:Name="title_history" Opacity="0">
+					<!-- Subtitle -->
+					<SubTitle Alignment="Left" Value="History" Margin="0,0,0,5"/>
+					<!-- Add button -->
+					<Image Alignment="Right" File="../../app/assets/add.png" Color="#fff" Height="22">
+						<Clicked Handler="{h_add_clicked}"/>
+					</Image> 
+				</Panel>
+
+				<!-- History list -->
+				<Rectangle ux:Name="list" Width="100%" Opacity="0">
+					<Stroke Width="1" Brush="#ffffff50"/>
+					<Panel Margin="5" >
+						<ScrollView ClipToBounds="true" Alignment="Top">
+							<StackPanel ItemSpacing="1">
+								<Each Items="{word_record}" >
+									<Panel>
+
+										<!-- Circle -->
+										<WhileTrue Value="{correctness}">
+											<WhileFalse Value="{is_add_mode}">
+												<Change history_circle.Opacity="1" Duration="0.3"/>
+												<Circle ux:Name="history_circle" Alignment="Right" Width="16" Height="16" Margin="7,0" Opacity="0">
+													<Stroke Width="3" Color="#fff" />
+												</Circle>
+											</WhileFalse>
+
+											<!-- Add note - heart -->
+											<WhileTrue Value="{is_add_mode}">
+												<Change heart_filled_img.Opacity="1" Duration="0.3" />
+												<Change heart_img.Opacity = "1" Duration="0.3" />
+											</WhileTrue>
+												<WhileTrue ux:Name="heart_filled" Value="{is_record}">
+													<Panel ux:Name="heart_filled_img" Color="#ffffff00" Opacity="0">
+														<Image File="../../app/assets/heart_filled.png" Alignment="Right" Height="18" Width="18" Margin="6">	
+															<Clicked Handler="{h_note_toggle}">
+																<Set heart_filled.Value="false"/>
+																<Set heart.Value="false"/>
+															</Clicked>
+														</Image>
+													</Panel>
+												</WhileTrue>
+												<WhileFalse ux:Name="heart" Value="{is_record}">
+													<Panel ux:Name="heart_img" Color="#ffffff00" Opacity="0">
+														<Image File="../../app/assets/heart.png" Alignment="Right" Height="18" Width="18" Margin="6">	
+															<Clicked Handler="{h_note_toggle}">
+																<Set heart_filled.Value="true"/>
+																<Set heart.Value="true"/>
+															</Clicked>
+														</Image>
+													</Panel>
+												</WhileFalse>	
+										</WhileTrue>
+
+										<WhileFalse Value="{correctness}">
+
+											<!-- Cross -->
+											<WhileFalse Value="{is_add_mode}">
+												<Change history_cross.Opacity="1" Duration="0.3"/>
+												<Panel ux:Name="history_cross" Alignment="Right" Margin="7,0" Height="16" Width="16" Opacity="0">
+													<Rectangle Width="100%" Height="20%" Color="#fff">
+														<Rotation Degrees="45"/>
+													</Rectangle>
+													<Rectangle Width="20%" Height="100%" Color="#fff">
+														<Rotation Degrees="45"/>
+													</Rectangle>
+												</Panel>
+											</WhileFalse>
+
+											<!-- Add Note - heart -->
+											<WhileTrue Value="{is_add_mode}">
+												<Change heart_filled_img2.Opacity="1" Duration="0.3" />
+												<Change heart_img2.Opacity = "1" Duration="0.3" />
+											</WhileTrue>
+												<WhileTrue ux:Name="heart_filled2" Value="{is_record}">
+													<Panel ux:Name="heart_filled_img2" Color="#ffffff00" Opacity="0">
+														<Image File="../../app/assets/heart_filled.png" Alignment="Right" Height="18" Width="18" Margin="6">	
+															<Clicked Handler="{h_note_toggle}">
+																<Set heart_filled2.Value="false"/>
+																<Set heart2.Value="false"/>
+															</Clicked>
+														</Image>
+													</Panel>
+												</WhileTrue>
+												<WhileFalse ux:Name="heart2" Value="{is_record}">
+													<Panel ux:Name="heart_img2" Color="#ffffff00" Opacity="0">
+														<Image File="../../app/assets/heart.png" Alignment="Right" Height="18" Width="18" Margin="6">	
+															<Clicked Handler="{h_note_toggle}">
+																<Set heart_filled2.Value="true"/>
+																<Set heart2.Value="true"/>
+															</Clicked>
+														</Image>
+													</Panel>
+												</WhileFalse>
+
+										</WhileFalse>
+
+										<!-- Word, hiragana, meaning -->
+										<Panel Offset="6,1" Alignment="CenterLeft" Width="100%">
+											<Text Value="{word}" FontSize="15" Color="#fff" X="0" MaxWidth="30%"/>
+											<Text Value="{hiragana}" FontSize="15" X="28%" Color="#fff" MaxWidth="30%"/>
+											<Text Value="{meaning}" FontSize="15" X="60%" Color="#fff" MaxWidth="30%"/>
+										</Panel>
+
+										<WhileTrue Value="{correctness}">
+											<!-- White -->
+											<Rectangle Fill="#fff" Opacity="0.1" Height="30" Width="100%"/>
+										</WhileTrue>
+
+										<WhileFalse Value="{correctness}">
+											<!-- Dark -->
+											<Rectangle Fill="#000" Opacity="0.3" Height="30" Width="100%"/>
+										</WhileFalse>
+
+									</Panel>
+								</Each>
+							</StackPanel>
+						</ScrollView>
+					</Panel>
+				</Rectangle>
+			</Grid>
+		</Grid>
+
+		<!-- Exit / Restart Button -->
+		<Grid ux:Name="exit" Height="100" Dock="Bottom" ColumnCount="2" Opacity="0">
+			<!-- <Rectangle Fill="#fff" Opacity="0.1"/> -->
+			<BackButton2.Panel app_router="app_router">
+				<Clicked>
+					<Set fade_in.Value="false"/>
+				</Clicked>
+			</BackButton2.Panel>
+			<RestartButton.Panel app_router="app_router">
+				<Clicked Handler="{h_restart_clicked}">
+					<Set fade_in.Value="false"/>
+				</Clicked>
+			</RestartButton.Panel>
+
+		</Grid>
+		<!-- Back Button -->
+		<!-- <BackButton.Panel app_router="app_router"/> -->
+
+	</DockPanel>

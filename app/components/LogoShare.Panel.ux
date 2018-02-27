@@ -1,0 +1,11 @@
+<Panel ux:Class="LogoShare.Panel">
+	<Circle Y="12" X="13" Width="5" Height="5" Color="#fff"/>
+	<Circle Y="22" X="13" Width="5" Height="5" Color="#fff"/>
+	<Circle Y="17" X="24" Width="5" Height="5" Color="#fff"/>
+	<Rectangle Y="-3" Alignment="Center" Height="1" Width="14" Color="#fff">
+		<Rotation Degrees="24"/>
+	</Rectangle>
+	<Rectangle Y="3" Alignment="Center" Height="1" Width="14" Color="#fff">
+		<Rotation Degrees="-24"/>
+	</Rectangle>
+</Panel>

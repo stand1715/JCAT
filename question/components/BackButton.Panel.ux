@@ -1,0 +1,25 @@
+<!-- Back Button -->
+<Panel ux:Class="BackButton.Panel" Alignment="TopLeft" Margin="14" Height="30" Width="30" ClipToBounds="true" Color="#ffffff00">
+	<Router ux:Dependency="app_router" />
+	<JavaScript>
+	let c_timer = require ('question/controllers/CTimer');
+
+	module.exports = {
+		h_back: function() { 
+			app_router.goto("v_login_page"); 
+			c_timer.c_pause_timer();
+		}
+	}
+	</JavaScript>
+	<Rectangle Alignment="Right" Height="100%" Width="30%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="Bottom" Height="30%" Width="100%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="Top" Height="30%" Width="45%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="TopLeft" Height="30%" Width="60%" Color="#fff" Offset="-14%,-17%">
+		<Rotation Degrees="45"/>
+	</Rectangle>
+	<Clicked Handler="{h_back}"/>
+	<OnBackButton Handler="{h_back}"/>
+	<WhilePressed>
+		<Scale Factor="1.15"/>
+	</WhilePressed>
+</Panel>

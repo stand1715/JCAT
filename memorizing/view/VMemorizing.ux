@@ -1,0 +1,50 @@
+<Page ux:Class="VMemorizing" Transition="None">
+	<EnteringAnimation>
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</EnteringAnimation>
+<!-- 	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</ExitingAnimation> -->
+
+	<Router ux:Dependency="app_router" />
+
+	<JavaScript>
+
+		let Observable = require('FuseJS/Observable');
+
+		let m_app = require ('app/models/MApp'); 
+
+		module.exports =
+		{
+			h_back: function() { app_router.goto("v_login_page"); },
+			bg_path: m_app.bg_path
+		}
+
+	</JavaScript>
+
+	<!-- Popup - pause -->
+	<Popup.Panel ux:Name="popup_pause"/>
+
+	<Navigator DefaultPath="v_memorizing_select">
+
+		<!-- Question Select -->
+		<VMemorizingSelect ux:Template="v_memorizing_select" app_router="app_router"/>
+
+		<!-- Memorizing Play -->
+		<VMemorizingPlay ux:Template="v_memorizing_play" app_router="app_router"/>
+
+		<!-- Counting Down -->
+		<!-- <CountDown.Panel ux:Template="v_count_down" app_router="app_router"/> -->
+
+		<!-- Question Play -->
+		<!-- <VQuestionPlay ux:Template="v_question_play" app_router="app_router" popup_pause="popup_pause"/> -->
+
+		<!-- Result Display -->
+		<!-- <VQuestionResult ux:Template="v_question_result" app_router="app_router"/> -->
+
+	</Navigator>
+
+	<!-- TODO DELETE -->
+	<Image File="{bg_path}" StretchMode="UniformToFill"/>
+
+</Page>

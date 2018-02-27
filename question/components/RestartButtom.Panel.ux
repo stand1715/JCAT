@@ -1,0 +1,20 @@
+<Panel ux:Class="RestartButton.Panel" Alignment="Center" Margin="14" Height="40" Width="40" ClipToBounds="true" Color="#ffffff00">
+	<Router ux:Dependency="app_router" />
+	<JavaScript>
+	module.exports = {
+		// h_restart: function() { app_router.goto("v_login_page"); }
+	}
+	</JavaScript>
+	<Rectangle Alignment="BottomRight" Height="20%" Width="60%" Color="#fff" Offset="38%,0%">
+		<Rotation Degrees="45"/>
+	</Rectangle>
+	<Rectangle Alignment="TopRight" Height="73%" Width="20%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="Left" Height="60%" Width="20%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="BottomLeft" Height="20%" Width="60%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="Top" Height="20%" Width="100%" Color="#fff" CornerRadius="1"/>
+<!-- 	<Rectangle Alignment="BottomLeft" Height="60%" Width="20%" Color="#fff" CornerRadius="1"/> -->
+	<!-- <Clicked Handler="{h_restart}"/> -->
+	<WhilePressed>
+		<Scale Factor="1.2"/>
+	</WhilePressed>
+</Panel>

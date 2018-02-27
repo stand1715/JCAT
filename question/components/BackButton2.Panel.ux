@@ -1,0 +1,20 @@
+<!-- Back Button -->
+<Panel ux:Class="BackButton2.Panel" Alignment="Center" Margin="14" Height="40" Width="40" ClipToBounds="true" Color="#ffffff00">
+	<OnBackButton Handler="{h_back}"/>
+	<Router ux:Dependency="app_router" />
+	<JavaScript>
+	module.exports = {
+		h_back: function() { app_router.goto("v_login_page"); }
+	}
+	</JavaScript>
+	<Rectangle Alignment="Right" Height="100%" Width="20%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="Bottom" Height="20%" Width="100%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="TopRight" Height="20%" Width="80%" Color="#fff" CornerRadius="1"/>
+	<Rectangle Alignment="TopLeft" Height="20%" Width="60%" Color="#fff" Offset="-24%,-17%">
+		<Rotation Degrees="45"/>
+	</Rectangle>
+	<Clicked Handler="{h_back}"/>
+	<WhilePressed>
+		<Scale Factor="1.15"/>
+	</WhilePressed>
+</Panel>

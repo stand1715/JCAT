@@ -1,0 +1,347 @@
+<Page ux:Class="VMemorizingSelect" Transition="None">
+	<EnteringAnimation>
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</EnteringAnimation>
+	<ExitingAnimation> 
+		<Change this.Opacity="0" Duration="1" Easing="CubicIn" />
+	</ExitingAnimation>
+
+	<WhileActive>
+		<Change started_toggle.Value="false"/>
+		<Change circle1_toggle.Value="false"/>
+		<Change circle2_toggle.Value="false"/>
+		<Change circle3_toggle.Value="false"/>
+		<Change circle4_toggle.Value="false"/>
+		<Change circle5_toggle.Value="false"/>
+		<Change mode_circle1_toggle.Value="false"/>
+		<Change mode_circle2_toggle.Value="false"/>
+		<Change mode_circle3_toggle.Value="false"/>
+	</WhileActive>
+
+	<!-- <Text Value="LEVEL:" Alignment="Center" Font="Japanese" Color="#fff" FontSize="30" Height="80%" Offset="-30%,20%" Opacity="0.3"/> -->
+
+	<Router ux:Dependency="app_router" />
+
+	<UserEvent ux:Name="levelEvent" />
+	<OnUserEvent EventName="levelEvent" Handler="{h_level_selected}" />
+	<UserEvent ux:Name="modeEvent" />
+	<OnUserEvent EventName="modeEvent" Handler="{h_mode_selected}" />
+
+	<JavaScript>
+
+	var m_question = require ('question/models/MQuestion'); 
+
+	var c_question = require ('question/controllers/CQuestion');
+
+	var c_timer = require ('question/controllers/CTimer');
+	
+	function h_level_selected(arg){
+		console.log(arg.level);
+		m_question.current_level_obs.value = arg.level;
+	}
+
+	function h_mode_selected(arg){
+		console.log(arg.mode);
+		m_question.current_mode_obs.value = arg.mode;
+	}
+
+	module.exports = {
+		h_back: function() { app_router.goto("v_login_page"); 
+	},
+		h_start_clicked: function () {
+			m_question.current_num_obs.value = 0;
+			c_question.c_retrieve_data(false);
+			setTimeout(
+				function() {
+					app_router.goto("v_memorizing", {} , "v_memorizing_play"); 
+				}, 500)},
+		h_level_selected,
+		h_mode_selected
+	}
+
+	</JavaScript>
+
+	<!-- ******************** start ******************** -->
+	<Text ux:Name="start" Alignment="Center" Value="START" FontSize="36" Font="Governor" Color="#ffffff" Opacity="0" IsEnabled="false">
+			<Clicked Handler="{h_start_clicked}">
+				<Toggle Target="started_toggle"/>
+			</Clicked>
+			<WhileTrue ux:Name="started_toggle" Value="false">
+				<Toggle Target="show_start_toggle"/>
+				<Change start.Opacity="0" Duration="0.5"/>
+				<Change start.IsEnabled="false"/>
+				<Change back_button.Opacity="0" Duration="0.5"/>
+				<Move Target="level_select" RelativeTo="Size" Y="-1" Duration="0.8"  />
+				<Move Target="mode_select" RelativeTo="Size" Y="1" Duration="0.8"  />
+			</WhileTrue>
+			<WhilePressed>
+				<Scale Factor="0.9"/>
+			</WhilePressed>
+		</Text>
+
+	<!-- LEVEL SELECTION -->
+	<Grid ux:Name="level_select" Alignment="Center" RowCount="5" Width="70%" Offset="0,0" Height="80%" >
+			<!-- N1 -->
+			<Panel ux:Name="select1" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="N1" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/> 
+				</Circle>
+				<Circle ux:Name="circle1_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle1_spin2" Height="66"/>
+				<WhileTrue ux:Name="circle1_toggle" Value="false">
+					<Change select1.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change select1.Offset="0,100%" Duration="0.35"/>
+					<Change select5.Opacity="0" Duration="0.5"/>
+					<Change select4.Opacity="0" Duration="0.5"/>
+					<Change select3.Opacity="0" Duration="0.5"/>
+					<Change select2.Opacity="0" Duration="0.5"/>
+					<Change select5.IsEnabled="false" Duration="0.5"/>
+					<Change select4.IsEnabled="false" Duration="0.5"/>
+					<Change select3.IsEnabled="false" Duration="0.5"/>
+					<Change select2.IsEnabled="false" Duration="0.5"/>
+					<Change circle1_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.35"/>
+					<Change circle1_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.35"/>
+					<Change mode_select.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change mode_select.IsEnabled="true" Duration="0.5" Delay="0.35"/>
+				</WhileTrue>
+				<Clicked>
+					<Toggle Target="circle1_toggle"/>
+					<RaiseUserEvent EventName="levelEvent">
+			            <UserEventArg Name="level" StringValue="N1" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+
+			<!-- N2 -->
+			<Panel ux:Name="select2" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="N2" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="circle2_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle2_spin2" Height="66"/>
+				<WhileTrue ux:Name="circle2_toggle" Value="false">
+					<Change select2.Opacity="1" Duration="0.5" Delay="0"/>
+					<Change select2.Offset="0,0" Duration="0"/>
+					<Change select5.Opacity="0" Duration="0.5"/>
+					<Change select4.Opacity="0" Duration="0.5"/>
+					<Change select3.Opacity="0" Duration="0.5"/>
+					<Change select1.Opacity="0" Duration="0.5"/>
+					<Change select5.IsEnabled="false" Duration="0.5"/>
+					<Change select4.IsEnabled="false" Duration="0.5"/>
+					<Change select3.IsEnabled="false" Duration="0.5"/>
+					<Change select1.IsEnabled="false" Duration="0.5"/>
+					<Change circle2_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0"/>
+					<Change circle2_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0"/>
+					<Change mode_select.Opacity="1" Duration="0.5" Delay="0.3"/>
+					<Change mode_select.IsEnabled="true" Duration="0.5" Delay="0.3"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="circle2_toggle"/>
+					<RaiseUserEvent EventName="levelEvent">
+			            <UserEventArg Name="level" StringValue="N2" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+			<!-- N3 -->
+			<Panel ux:Name="select3" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="N3" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="circle3_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle3_spin2" Height="66"/>
+				<WhileTrue ux:Name="circle3_toggle" Value="false">
+					<Change select3.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change select3.Offset="0,-100%" Duration="0.35"/>
+					<Change select5.Opacity="0" Duration="0.5"/>
+					<Change select4.Opacity="0" Duration="0.5"/>
+					<Change select2.Opacity="0" Duration="0.5"/>
+					<Change select1.Opacity="0" Duration="0.5"/>
+					<Change select5.IsEnabled="false" Duration="0.5"/>
+					<Change select4.IsEnabled="false" Duration="0.5"/>
+					<Change select2.IsEnabled="false" Duration="0.5"/>
+					<Change select1.IsEnabled="false" Duration="0.5"/>
+					<Change circle3_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.35"/>
+					<Change circle3_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.35"/>
+					<Change mode_select.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change mode_select.IsEnabled="true" Duration="0.5" Delay="0.35"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="circle3_toggle"/>
+					<RaiseUserEvent EventName="levelEvent">
+			            <UserEventArg Name="level" StringValue="N3" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+			<!-- N4 -->
+			<Panel ux:Name="select4" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="N4" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="circle4_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle4_spin2" Height="66"/>
+				<WhileTrue ux:Name="circle4_toggle" Value="false">
+					<Change select4.Opacity="1" Duration="0.5" Delay="0.6"/>
+					<Change select4.Offset="0,-200%" Duration="0.6"/>
+					<Change select5.Opacity="0" Duration="0.5"/>
+					<Change select3.Opacity="0" Duration="0.5"/>
+					<Change select2.Opacity="0" Duration="0.5"/>
+					<Change select1.Opacity="0" Duration="0.5"/>
+					<Change select5.IsEnabled="false" Duration="0.5"/>
+					<Change select3.IsEnabled="false" Duration="0.5"/>
+					<Change select2.IsEnabled="false" Duration="0.5"/>
+					<Change select1.IsEnabled="false" Duration="0.5"/>
+					<Change circle4_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.6"/>
+					<Change circle4_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.6"/>
+					<Change mode_select.Opacity="1" Duration="0.5" Delay="0.6"/>
+					<Change mode_select.IsEnabled="true" Duration="0.5" Delay="0.6"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="circle4_toggle"/>
+					<RaiseUserEvent EventName="levelEvent">
+			            <UserEventArg Name="level" StringValue="N4" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+
+			<!-- N5 -->
+			<Panel ux:Name="select5" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="N5" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="circle5_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="circle5_spin2" Height="66"/>
+				<WhileTrue ux:Name="circle5_toggle" Value="false">
+					<Change select5.Opacity="1" Duration="0.5" Delay="0.8"/>
+					<Change select5.Offset="0,-300%" Duration="0.8"/>
+					<Change select4.Opacity="0" Duration="0.5"/>
+					<Change select3.Opacity="0" Duration="0.5"/>
+					<Change select2.Opacity="0" Duration="0.5"/>
+					<Change select1.Opacity="0" Duration="0.5"/>
+					<Change select4.IsEnabled="false" Duration="0.5"/>
+					<Change select3.IsEnabled="false" Duration="0.5"/>
+					<Change select2.IsEnabled="false" Duration="0.5"/>
+					<Change select1.IsEnabled="false" Duration="0.5"/>
+					<Change circle5_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.8"/>
+					<Change circle5_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.8"/>
+					<Change mode_select.Opacity="1" Duration="0.5" Delay="0.8"/>
+					<Change mode_select.IsEnabled="true" Duration="0.5" Delay="0.8"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="circle5_toggle"/>
+					<RaiseUserEvent EventName="levelEvent">
+			            <UserEventArg Name="level" StringValue="N5" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+		</Grid>
+
+	<!-- MODE SELECTION -->
+	<Grid ux:Name="mode_select" Alignment="Center" ColumnCount="3" Width="90%" Offset="0,16%" Height="80%" Opacity="0" IsEnabled="false">
+			<!-- 名 -->
+			<Panel ux:Name="mode_select1" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="名" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/> 
+				</Circle>
+				<Circle ux:Name="mode_circle1_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="mode_circle1_spin2" Height="66"/>
+				<WhileTrue ux:Name="mode_circle1_toggle" Value="false">
+					<Change mode_select1.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change mode_select1.Offset="100%,0" Duration="0.35"/>
+					<Change mode_select3.Opacity="0" Duration="0.5"/>
+					<Change mode_select2.Opacity="0" Duration="0.5"/>
+					<Change mode_select3.IsEnabled="false" Duration="0.5"/>
+					<Change mode_select2.IsEnabled="false" Duration="0.5"/>
+					<Change mode_circle1_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.35"/>
+					<Change mode_circle1_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.35"/>
+					<Change show_start_toggle.Value="true" Delay="0.35"/>
+				</WhileTrue>
+				<Clicked>
+					<Toggle Target="mode_circle1_toggle"/>
+					<RaiseUserEvent EventName="modeEvent">
+			            <UserEventArg Name="mode" StringValue="名" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+
+			<!-- 形 -->
+			<Panel ux:Name="mode_select2" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="形" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="mode_circle2_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="mode_circle2_spin2" Height="66"/>
+				<WhileTrue ux:Name="mode_circle2_toggle" Value="false">
+					<Change mode_select2.Opacity="1" Duration="0.5" Delay="0"/>
+					<Change mode_select2.Offset="0,0" Duration="0"/>
+					<Change mode_select3.Opacity="0" Duration="0.5"/>
+					<Change mode_select1.Opacity="0" Duration="0.5"/>
+					<Change mode_select3.IsEnabled="false" Duration="0.5"/>
+					<Change mode_select1.IsEnabled="false" Duration="0.5"/>
+					<Change mode_circle2_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0"/>
+					<Change mode_circle2_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0"/>
+					<Change show_start_toggle.Value="true" Delay="0.35"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="mode_circle2_toggle"/>
+					<RaiseUserEvent EventName="modeEvent">
+			            <UserEventArg Name="mode" StringValue="形" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+			<!-- 動 -->
+			<Panel ux:Name="mode_select3" Opacity="0.3">
+				<Circle Height="54" Color="#fff" >
+					<Text Alignment="Center" Value="動" Font="Japanese" Color="#002151" FontSize="33" Offset="0,2"/>
+				</Circle>
+				<Circle ux:Name="mode_circle3_spin1" Height="66" StartAngleDegrees="-90" EndAngleDegrees="-89.99">
+					<Stroke Width="2" Color="#fff"/>
+				</Circle>
+				<Circle ux:Name="mode_circle3_spin2" Height="66"/>
+				<WhileTrue ux:Name="mode_circle3_toggle" Value="false">
+					<Change mode_select3.Opacity="1" Duration="0.5" Delay="0.35"/>
+					<Change mode_select3.Offset="-100%,0" Duration="0.35"/>
+					<Change mode_select2.Opacity="0" Duration="0.5"/>
+					<Change mode_select1.Opacity="0" Duration="0.5"/>
+					<Change mode_select2.IsEnabled="false" Duration="0.5"/>
+					<Change mode_select1.IsEnabled="false" Duration="0.5"/>
+					<Change mode_circle3_spin1.StartAngleDegrees="-269.99" Duration="0.5" Delay="0.35"/>
+					<Change mode_circle3_spin1.EndAngleDegrees="90" Duration="0.5" Delay="0.35"/>
+					<Change show_start_toggle.Value="true" Delay="0.35"/>
+				</WhileTrue>
+
+				<Clicked>
+					<Toggle Target="mode_circle3_toggle"/>
+					<RaiseUserEvent EventName="modeEvent">
+			            <UserEventArg Name="mode" StringValue="動" />
+			        </RaiseUserEvent>
+				</Clicked>
+			</Panel>
+		</Grid>	
+		<WhileTrue ux:Name="show_start_toggle" Value="false">
+			<Change start.Opacity="1" Duration="0.5" />
+			<Change start.IsEnabled="true" />
+		</WhileTrue>
+
+	<!-- Back Button -->
+	<BackButton.Panel ux:Name="back_button" app_router="app_router"/>
+
+</Page>

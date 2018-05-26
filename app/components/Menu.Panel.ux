@@ -21,7 +21,7 @@
 		h_info_clicked: function(){ m_app.is_info.value = !m_app.is_info.value;},
 		h_share_clicked: function(){},
 		h_setting_clicked: function(){}
-	}
+	};
 
 	</JavaScript>
 

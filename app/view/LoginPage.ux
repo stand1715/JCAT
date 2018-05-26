@@ -2,7 +2,15 @@
 
 	<JavaScript>
 		let m_app = require ('app/models/MApp'); 
-		
+		// let MediaQuery = require("FuseJS/MediaQuery");
+		let StreamingPlayer = require("FuseJS/StreamingPlayer");
+
+		function playSong(){
+			StreamingPlayer.playlist. = [{ "id": 1,"url": "app/assets/sound/bgm_healing17.mp3", "duration": 177.0 },{ "id": 2,"url": "app/assets/sound/bgm_healing17.mp3", "duration": 177.0 }];
+			console.log("Function: playSong");
+			setTimeOut(function(){StreamingPlayer.play()},1000);
+		}
+
 	    module.exports = {
 	        enter_question: function() { 
 	        	app_router.push("v_question", {}, "v_question_select");
@@ -19,12 +27,13 @@
 	        },
 	        close_notes: function(){
 	        	m_app.is_notes.value = false;
-	        }
+	        },
+	        playSong: playSong
 	    };
 	</JavaScript>
 
 	<Activated>
-		<PlaySound ux:Name="music" File="../assets/sound/bgm_healing17.mp3"/>
+		<!-- <PlaySound ux:Name="music" File="../assets/sound/bgm_healing17.mp3"/> -->
 	</Activated>
 
 	<Router ux:Dependency="app_router" />
@@ -80,6 +89,10 @@
 				<Set music.When="Stop"/>
 			</Clicked>
 		</Image> -->
+
+		<Text Value="Play Sound" TextColor="#fff" Alignment="TopRight" Margin="10">
+			<Clicked Handler="{playSong}"/>
+		</Text>
 
 		<!-- JAPAN CAT text -->
 		<StackPanel Offset="0,60" Alignment="Center" Orientation="Horizontal">

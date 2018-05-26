@@ -1,0 +1,11 @@
+{
+  "Packages": [
+    "Fuse",
+    "FuseJS",
+    "Uno.Permissions"
+  ],
+  "Includes": [
+    "*",
+    "Android/MMQB.java:Java:android"
+  ]
+}

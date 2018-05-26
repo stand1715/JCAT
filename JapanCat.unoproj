@@ -6,6 +6,10 @@
   	"Fuse.Animations",
     "Fuse.Audio"
   ],
+  "Projects": [
+    "library/MediaQuery/Fuse.MediaQuery.unoproj",
+    "library/StreamingPlayer/Fuse.StreamingPlayer.unoproj",
+  ],
   "Includes": [
     "*",
     "**.json:Bundle",

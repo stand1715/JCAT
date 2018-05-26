@@ -13,7 +13,7 @@
 
 	module.exports={
 		popup_close
-	}
+	};
 	</JavaScript>
 	<!-- popup details - schedule -->
 	<WhileTrue Value="{ReadProperty PopupEnabled}">

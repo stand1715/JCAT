@@ -28,16 +28,22 @@
 
 		let test_bool = Observable(false);
 		let length_ratio = Observable(0);
+		let is_finished = Observable(false);
 
 		function h_next_word(arg){
 			
+			length_ratio.value = (m_question.current_num_obs.value + 1 ) / m_question.data_length_obs.value * 100;
+
+			if (m_question.current_num_obs.value + 1 == m_question.data_length_obs.value){
+				is_finished.value = true;
+				return;
+			}
+
 			c_question.c_next_word();
 
 			// let Timer01 = Timer.create(function() {
 			// 	m_question.current_romaji_obs.replaceAll(c_memorizing.toRomaji(m_question.current_item_obs.value.hiragana));
 			// }, 100, true);
-
-			length_ratio.value = m_question.current_num_obs.value / m_question.data_length_obs.value * 100;
 
 		}
 
@@ -59,10 +65,20 @@
 			data_length: m_question.data_length_obs,
 			current_num_obs: m_question.current_num_obs,
 			length_ratio: length_ratio,
-			h_add_clicked: c_memorizing.h_add_clicked
-		}
+			h_add_clicked: c_memorizing.h_add_clicked,
+			is_finished: is_finished
+		};
 
 	</JavaScript>
+
+	<!-- Finish -->
+	<WhileTrue Value="{is_finished}">
+		<Change finish.Opacity="1" Duration="0.4"/>
+		<Text ux:Name="finish" Value="Finish!" Alignment="Center" FontSize="50" Y="-10" TextColor="#fff" Opacity="0"/>
+		<Set word.Opacity="0"/>
+		<Set answer.Opacity="0"/>
+		<Set meaning.Opacity="0"/>
+	</WhileTrue>
 
 	<!-- add popup -->
 	<WhileTrue ux:Name="add_toggle" Value="false">

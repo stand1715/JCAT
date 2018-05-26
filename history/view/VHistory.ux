@@ -11,8 +11,21 @@
 	<JavaScript>
 		let c_history = require ('history/controllers/CHistory');
 		let m_history = require ('history/models/MHistory');
+		let Observable = require('FuseJS/Observable');
+		let Timer = require("FuseJS/Timer");
 
+		let clicked_word = Observable("word");
+
+		// c_history.delete_record();
 		c_history.read_record();
+
+		function h_delete(){
+			c_history.c_delete(m_history.current_word_obs);
+			Timer.create(function() {
+			    c_history.read_record();
+			}, 100, false);
+			m_history.is_long_pressed_obs.value = false;
+		}
 
 		module.exports =
 		{	
@@ -20,10 +33,55 @@
 			mode: ["名", "形", "動"],
 			select: function(arg){c_history.select(arg);},
 			data_obs: m_history.data_obs,
-			delete_record: c_history.delete_record
-		}
+			delete_record: c_history.delete_record,
+			longPressed: function(arg){
+				m_history.is_long_pressed_obs.value = !m_history.is_long_pressed_obs.value;clicked_word.value = arg.data.word; 
+				m_history.current_word_obs = arg},
+			is_long_pressed: m_history.is_long_pressed_obs,
+			clicked_word: clicked_word,
+			close_popup: function(){m_history.is_long_pressed_obs.value = false;},
+			h_delete: h_delete
+		};
 	</JavaScript>
 
+<!-- Delete mode -->
+<WhileTrue Value="{is_long_pressed}">
+	<Rectangle CornerRadius="3" Color="#000" Alignment="Center">
+		<Stroke Brush="#fff" Width="1"/>
+		<StackPanel Alignment="Center" Margin="10,10,10,3" Offset="0,-1">
+			<Text Value="Delete {clicked_word}?" Color="#fff" Alignment="Center" FontSize="16"/>
+			<Grid ColumnCount="2" Margin="0,10">
+
+					<!-- Yes -->
+					<Panel Alignment="Center" Height="16" Width="16" Color="#000">
+						<Scaling Factor="1.3"/>
+						<Rectangle Width="35%" Height="20%" Color="#84ffd8" Offset="-4,2">
+							<Rotation Degrees="45"/>
+						</Rectangle>
+						<Rectangle Width="20%" Height="90%" Color="#84ffd8" Offset="2,0">
+							<Rotation Degrees="40"/>
+						</Rectangle>
+						<Clicked Handler="{h_delete}"/>
+					</Panel>
+
+					<!-- No -->
+					<Panel Alignment="Center" Height="16" Width="16" Color="#000">
+						<Scaling Factor="1.3"/>
+						<Rectangle Width="100%" Height="20%" Color="Red">
+							<Rotation Degrees="45"/>
+						</Rectangle>
+						<Rectangle Width="20%" Height="100%" Color="Red">
+							<Rotation Degrees="45"/>
+						</Rectangle>
+						<Clicked Handler="{close_popup}"/>
+					</Panel>
+			</Grid>
+		</StackPanel>
+	</Rectangle>
+</WhileTrue>
+
+
+<!-- Hidtory -->
 <Grid Rows="auto,auto,1*" Margin="20">
 
 	<!-- Title -->
@@ -100,12 +158,12 @@
 			</WhileEmpty>
 			<WhileNotEmpty Items="{data_obs}">
 				<Change list.Opacity="1" Duration="0.3"/>
+
 			<ScrollView ux:Name="list" Opacity="0" ClipToBounds="true" Alignment="Top" >
 				<StackPanel ItemSpacing="1">
 					<Each Items="{data_obs}" Defer="Deferred">
 					<!-- <Each Count="16"> -->
 						<Panel>
-
 							<!-- Word, hiragana, meaning -->
 							<Panel Offset="6,1" Alignment="CenterLeft" Width="100%">
 								<Text Value="{word}" FontSize="15" Color="#fff" X="0%" MaxWidth="30%"/>
@@ -115,7 +173,7 @@
 
 							<!-- <WhileTrue Value="{correctness}"> -->
 								<!-- White -->
-								<Rectangle Fill="#fff" Opacity="0.1" Height="30" Width="100%"/>
+								<Rectangle ux:Name="bar_color" Fill="#fff" Opacity="0.1" Height="30" Width="100%"/>
 							<!-- </WhileTrue> -->
 
 							<!-- <WhileFalse Value="{correctness}"> -->
@@ -123,6 +181,11 @@
 								<!-- <Rectangle Fill="#000" Opacity="0.3" Height="30" Width="100%"/> -->
 							<!-- </WhileFalse> -->
 
+							<WhilePressed>
+								<Change bar_color.Opacity="0.1"/>
+								<Change bar_color.Fill="#000"/>
+				                <Callback Handler="{longPressed}" Delay="0.5"/>
+				            </WhilePressed>
 						</Panel>
 					</Each>
 				</StackPanel>

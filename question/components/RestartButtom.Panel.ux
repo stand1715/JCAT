@@ -3,7 +3,7 @@
 	<JavaScript>
 	module.exports = {
 		// h_restart: function() { app_router.goto("v_login_page"); }
-	}
+	};
 	</JavaScript>
 	<Rectangle Alignment="BottomRight" Height="20%" Width="60%" Color="#fff" Offset="38%,0%">
 		<Rotation Degrees="45"/>

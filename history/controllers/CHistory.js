@@ -1,6 +1,7 @@
 let Storage = require("FuseJS/Storage");
 
 let m_history = require ('history/models/MHistory');
+let m_question = require ('question/models/MQuestion'); 
 
 let noun_record = [];
 let adj_record = [];
@@ -142,8 +143,70 @@ function set_data(){
 	console.log("data_obs: " + JSON.stringify(m_history.data_obs.value));
 }
 
+function c_delete(arg){
+		delete_per_mode("名",arg);
+		delete_per_mode("形",arg);
+		delete_per_mode("動",arg);
+		console.log("--- add notes: " + arg.data.word);
+	}
+
+function delete_per_mode(mode, arg){
+
+	for (let i=1; i<=5; i++){
+
+				// create file name 
+				let t_file_name = "N" + i + mode + ".txt";
+
+				console.log("t_file_name: " + t_file_name);
+
+				// read storage
+				let t_storage = Storage.readSync(t_file_name);
+
+				// console.log("t_storage: " + t_storage);
+
+				if (t_storage == '') { // check emptyness
+
+					console.log("-- the file is empty --")
+
+					continue;
+				}
+				
+				// log the word contained
+
+				let is_contain = false;
+
+				t_storage = JSON.parse(t_storage);
+
+				t_storage.forEach(function(item, index) {
+					if (item.word == arg.data.word) is_contain = true;
+					console.log("storage: " + index + " " + item.word);
+				});
+				
+				console.log("is_contain: "+ is_contain);
+
+				let index = t_storage.map(function(x){ return x.word; }).indexOf(arg.data.word);
+
+				console.log("index: "+ index);
+
+				// delele word
+				t_storage.splice(index,1);
+
+				t_storage = JSON.stringify(t_storage);
+
+				// store
+				let success = Storage.writeSync( t_file_name, t_storage );
+
+				if(success) {
+					console.log("Successfully delete " + arg.data.word + " from "  + t_file_name);
+				}
+				else {
+					console.log("An error occured!");
+				}
+			}
+}
 module.exports = {
 	read_record,
 	select,
-	delete_record
+	delete_record,
+	c_delete
 }

@@ -14,7 +14,7 @@
 		colors: m_app.colors,
 		h_color_change: h_color_change,
 		current_color: m_app.current_color
-	}
+	};
 
 	</JavaScript>
 

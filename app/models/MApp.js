@@ -19,7 +19,7 @@ let isColorChanged = Observable(false);
 
 let is_info = Observable(false);
 
-let is_notes = Observable(true);
+let is_notes = Observable(false);
 
 module.exports = {
 	colors,

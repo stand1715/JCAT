@@ -235,13 +235,13 @@
 		</Activated>
 
 		<WhileTrue ux:Name="fade_in" Value="false">
-			<Change title_score.Opacity="1" Duration="1" />
-			<Change bar.Opacity="1" Duration="1" Delay="0.4"/>
-			<Change title_time.Opacity="1" Duration="1" Delay="0.8"/>
-			<Change chart.Opacity="1" Duration="1" Delay="1.2"/>
-			<Change title_history.Opacity="1" Duration="1" Delay="1.6"/>
-			<Change list.Opacity="1" Duration="1" Delay="2"/>
-			<Change exit.Opacity="1" Duration="2" Delay="1"/>
+			<Change title_score.Opacity="0.8" Duration="1" />
+			<Change bar.Opacity="1" Duration="0.8" Delay="0.3"/>
+			<Change title_time.Opacity="1" Duration="0.8" Delay="0.6"/>
+			<Change chart.Opacity="1" Duration="0.8" Delay="0.9"/>
+			<Change title_history.Opacity="1" Duration="0.8" Delay="1.2"/>
+			<Change list.Opacity="1" Duration="0.8" Delay="1.6"/>
+			<Change exit.Opacity="1" Duration="0.8" Delay="0.8"/>
 		</WhileTrue>
 
 		<!-- Style -->

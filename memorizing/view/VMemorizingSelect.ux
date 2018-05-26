@@ -57,7 +57,7 @@
 				}, 500)},
 		h_level_selected,
 		h_mode_selected
-	}
+	};
 
 	</JavaScript>
 
@@ -111,6 +111,7 @@
 					<RaiseUserEvent EventName="levelEvent">
 			            <UserEventArg Name="level" StringValue="N1" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 
@@ -145,6 +146,7 @@
 					<RaiseUserEvent EventName="levelEvent">
 			            <UserEventArg Name="level" StringValue="N2" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 			<!-- N3 -->
@@ -178,6 +180,7 @@
 					<RaiseUserEvent EventName="levelEvent">
 			            <UserEventArg Name="level" StringValue="N3" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 			<!-- N4 -->
@@ -211,6 +214,7 @@
 					<RaiseUserEvent EventName="levelEvent">
 			            <UserEventArg Name="level" StringValue="N4" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 
@@ -245,6 +249,7 @@
 					<RaiseUserEvent EventName="levelEvent">
 			            <UserEventArg Name="level" StringValue="N5" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 		</Grid>
@@ -276,6 +281,7 @@
 					<RaiseUserEvent EventName="modeEvent">
 			            <UserEventArg Name="mode" StringValue="名" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 
@@ -305,6 +311,7 @@
 					<RaiseUserEvent EventName="modeEvent">
 			            <UserEventArg Name="mode" StringValue="形" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 			<!-- 動 -->
@@ -333,6 +340,7 @@
 					<RaiseUserEvent EventName="modeEvent">
 			            <UserEventArg Name="mode" StringValue="動" />
 			        </RaiseUserEvent>
+			        <PlaySound File="../../app/assets/sound/select_sound.mp3" />
 				</Clicked>
 			</Panel>
 		</Grid>	

@@ -10,7 +10,7 @@
 	Timer.create(function() {
 		c_timer.c_start_timer();
 		app_router.goto("v_question", {} , "v_question_play"); 
-	}, 2400, false);
+	}, 1800, false);
 	</JavaScript>
 
 	<Router ux:Dependency="app_router" />
@@ -27,19 +27,19 @@
 
 	<Timeline ux:Name="count_down">
 		<Change Target="num3.Opacity">
-			<Keyframe Value="1" Time="0.4" />
-       		<Keyframe Value="0" Time="0.8" />
+			<Keyframe Value="1" Time="0.3" />
+       		<Keyframe Value="0" Time="0.6" />
 		</Change>
-		<Change Target="num2.Opacity" Delay="0.8">
-			<Keyframe Value="1" Time="0.4" />
-       		<Keyframe Value="0" Time="0.8" />
+		<Change Target="num2.Opacity" Delay="0.6">
+			<Keyframe Value="1" Time="0.3" />
+       		<Keyframe Value="0" Time="0.6" />
 		</Change>
-		<Change Target="num1.Opacity" Delay="1.6">
-			<Keyframe Value="1" Time="0.4" />
-       		<Keyframe Value="0" Time="0.8" />
+		<Change Target="num1.Opacity" Delay="1.2">
+			<Keyframe Value="1" Time="0.3" />
+       		<Keyframe Value="0" Time="0.6" />
 		</Change>
 		<!-- <Set count_down.TargetProgress="0" Delay="3"/> -->
-		<Set count_down.InitialProgress="0" Delay="2.4"/>
+		<Set count_down.InitialProgress="0" Delay="1.8"/>
 	</Timeline>
 
 </Panel>

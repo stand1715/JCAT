@@ -25,19 +25,37 @@
 
 		m_question.correct_num.value = 0;
 		m_question.wrong_num.value = 0;
+		m_question.current_num_obs.value = 0;
 
 		let test_bool = Observable(false);
 		let is_clicked = Observable(false);
+
+		let timer_count;
+		let timer_record;
 		function h_clicked(arg){
 			m_question.is_clickable.value = false;
+
+			console.log(m_question.current_num_obs.value + " ==? " + m_question.data_length_obs.value);
+			
+
 			c_question.c_next_question();
+
+			if (m_question.current_num_obs.value + 1 == m_question.data_length_obs.value){
+				Timer.delete(timer_record);
+				Timer.delete(timer_count);
+				c_timer.c_pause_timer();
+				Timer.create(function() {
+					app_router.goto("v_question", {} , "v_question_result");
+				}, 300, false); 
+			}
+
 		}
 
 		h_time_up();
 
 		// Timer checking
 		function h_time_up(){
-			let timer_count = Timer.create(function() {
+			timer_count = Timer.create(function() {
 				// time up
 				if (m_question.timer.value >= 19.9){
 					app_router.goto("v_question", {} , "v_question_result");
@@ -55,7 +73,7 @@
 		}
 
 		function record(){
-			let timer_record = Timer.create(function() {
+			timer_record = Timer.create(function() {
 				m_question.time_record_array.add(m_question.timer.value*2.95);
 				if (m_question.timer.value >= 19.9){
 					m_question.time_record_array.add(59);

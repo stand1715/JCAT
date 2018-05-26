@@ -59,6 +59,8 @@ function c_retrieve_data(is_question){
 					// m_question.record_obs.add(m_question.data_obs[m_question.current_num_obs.value]);
 					m_question.current_item_obs.value = m_question.data_obs[m_question.current_num_obs.value];
 					m_question.current_choice_obs.replaceAll(m_question.choice_data_obs.getAt(m_question.current_num_obs.value));
+
+					m_question.data_length_obs.value = m_question.data_obs.length;
 				}, 200, false);
 			}, 200, false);
 
@@ -130,6 +132,12 @@ function c_next_question(){
 		// recording
 
 		m_question.record_obs.add(m_question.data_obs[m_question.current_num_obs.value]);
+
+		// if finish
+		if (m_question.current_num_obs.value + 1 == m_question.data_length_obs.value){
+			m_question.is_clickable.value = true;
+			return;
+		}
 
 		m_question.current_num_obs.value++;
 

@@ -227,7 +227,7 @@
 					m_question.is_add_mode.value = false;
 					app_router.goto("v_question", {} , "v_count_down"); 
 				}, 500)}
-		}
+		};
 		</JavaScript>
 
 		<Activated>

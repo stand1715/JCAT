@@ -89,7 +89,7 @@
 			correct_num: m_question.correct_num,
 			wrong_num: m_question.wrong_num,
 			is_pause: m_question.is_pause
-		}
+		};
 
 	</JavaScript>
 

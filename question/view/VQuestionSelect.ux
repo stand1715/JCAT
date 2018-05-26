@@ -57,8 +57,7 @@
 				}, 500)},
 		h_level_selected,
 		h_mode_selected
-	}
-
+	};
 	</JavaScript>
 
 	<!-- ******************** start ******************** -->

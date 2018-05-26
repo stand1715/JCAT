@@ -6,9 +6,9 @@
 		let StreamingPlayer = require("FuseJS/StreamingPlayer");
 
 		function playSong(){
-			StreamingPlayer.playlist. = [{ "id": 1,"url": "app/assets/sound/bgm_healing17.mp3", "duration": 177.0 },{ "id": 2,"url": "app/assets/sound/bgm_healing17.mp3", "duration": 177.0 }];
+			StreamingPlayer.playlist = [{"url": "app/assets/sound/bgm_healing17.mp3", "duration": 177.0 }];
 			console.log("Function: playSong");
-			setTimeOut(function(){StreamingPlayer.play()},1000);
+			StreamingPlayer.play();
 		}
 
 	    module.exports = {

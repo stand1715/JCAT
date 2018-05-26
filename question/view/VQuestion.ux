@@ -18,7 +18,7 @@
 		{
 			h_back: function() { app_router.goto("v_login_page"); },
 			bg_path: m_app.bg_path
-		}
+		};
 
 	</JavaScript>
 
